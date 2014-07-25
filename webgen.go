@@ -96,16 +96,11 @@ func (p prefixWriter) Write(b []byte) (int, error) {
 
 // runs "go get -u <path>" to download/update source code.
 func gogetu(path string) error {
-
 	log.Printf("    go get -u %s", path)
 	cmd := exec.Command("go", "get", "-u", path)
 	cmd.Stdout = prefixWriter{out: os.Stdout, prefix: []byte("        ")}
 	cmd.Stderr = prefixWriter{out: os.Stderr, prefix: []byte("        ")}
-	err := cmd.Run()
-	if err != nil {
-		return err
-	}
-	return nil
+	return cmd.Run()
 }
 
 var (
@@ -118,6 +113,7 @@ var (
 	updateFlag       = flag.Bool("update", true, "update scanned repositories using go get -u")
 	docsFlag         = flag.Bool("docs", true, "generate package documentation (links broken otherwise)")
 	auth             = flag.Bool("auth", true, "authenticate with GitHub using $GITHUB_API_TOKEN")
+	pushAfter        = flag.Bool("push", true, "run git add, commit, and push in the output directory after generation")
 
 	tmplRoot *template.Template
 )
@@ -148,7 +144,18 @@ func main() {
 
 	if *cleanOutDir {
 		log.Println("rm -rf", cleanPath(*outDir))
-		os.RemoveAll(*outDir)
+		err := filepath.Walk(*outDir, func(path string, info os.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
+			if path != *outDir && !strings.Contains(path, ".git") {
+				return os.RemoveAll(path)
+			}
+			return nil
+		})
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	// Copy content folder.
@@ -242,6 +249,23 @@ func main() {
 	err = generateDocs()
 	if err != nil {
 		log.Fatal(err)
+	}
+
+	if *pushAfter {
+		log.Println("Pushing changes to remote...")
+		log.Println("    Repo Root:", *outDir)
+		err := gitadda(*outDir)
+		if err != nil {
+			log.Println("    ", err)
+		}
+		err = gitcommitam(*outDir, "Automatic commit by webgen command line tool.")
+		if err != nil {
+			log.Println("    ", err)
+		}
+		err = gitpush(*outDir)
+		if err != nil {
+			log.Println("    ", err)
+		}
 	}
 
 	if len(*httpAddr) > 0 {
