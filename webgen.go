@@ -27,7 +27,7 @@ const (
 	contentDirName   = "content"
 	pagesDirName     = "pages"
 	templatesDirName = "templates"
-	rootDir          = "src/github.com/azul3d/webgen"
+	rootDir          = "src/azul3d.org/cmd/webgen.v0"
 	defaultOutDir    = "src/github.com/azul3d/azul3d.github.io"
 	pkgDocTemplate   = "pkgdoc.tmpl"
 	pkgDocOutDir     = ""
