@@ -1,0 +1,67 @@
+	</div>
+</div>
+
+
+<div id="footer">
+	<div>© 2014 The Azul3D Authors, All Rights Reserved.</div>
+	<div>Unless noted otherwise, the content of this page is licensed under the Creative Commons Attribution 3.0 License, and code is licensed under a BSD license.</div>
+</div>
+
+
+<script>
+$(document).ready(function() {
+	$("body").css("opacity", 0);
+});
+
+$(window).ready(function() {
+	var fadeIn = function(self, delay) {
+		self.css("opacity", 0).delay(delay).animate({opacity: 1}, "slow");
+	}
+
+	var fromSameSite = document.referrer.indexOf(location.protocol + "//" + location.host) === 0;
+
+	// Package documentation pages are very long and take a long time to fade
+	// in with the integral code below.
+	var longPage = $(document).height() > $(window).height() * 3;
+	if(fromSameSite || longPage) {
+		fadeIn($("body"), 10);
+	} else {
+		var workingIndex = 0;
+		var speed = 75;
+		$("#content").children().each(function(index) {
+			fadeIn($(this), 1000 + (speed * workingIndex));
+			workingIndex++;
+			if($(this).hasClass("list")) {
+				$(this).children().each(function(index) {
+					fadeIn($(this), 1000 + (speed * workingIndex));
+					workingIndex++;
+				});
+			}
+		});
+
+		var w = $("#shortbar").width();
+		$("#shortbar").css({
+			right: -w-1 + "px",
+			opacity: 0
+		}).delay(10).animate({
+			right: "0px",
+			opacity: 1
+			}, "slow");
+
+		var w = $("#navigation").width();
+		$("#navigation").css({
+			left: -w-1 + "px",
+			opacity: 0
+		}).delay(10).animate({
+			left: "0px",
+			opacity: 1
+			}, "slow");
+
+		fadeIn($("#logo"), 10);
+		fadeIn($("body"), 10);
+	}
+})
+</script>
+	</body>
+</html>
+

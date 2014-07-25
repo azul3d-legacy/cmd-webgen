@@ -1,0 +1,77 @@
+{{template "top.tmpl"}}
+
+{{template "section" section "Windows Installation"}}
+	<p>What follows is a detailed step-by-step guide on installing Azul3D on a windows 386/amd64 platform. For other platforms please see <a href="/doc/install">this page</a>.</p>
+
+	{{template "list"}}
+		{{template "li"}}<a href="#install-go">Install Go</a>{{template "li-end"}}
+		{{template "li"}}<a href="#install-git">Install Git</a>{{template "li-end"}}
+		{{template "li"}}<a href="#install-mingw-32">Install MinGW (32-bit Windows)</a>{{template "li-end"}}
+		{{template "li"}}<a href="#install-mingw-64">Install MinGW (64-bit Windows)</a>{{template "li-end"}}
+		{{template "li"}}<a href="#compiling-the-examples">Compiling The Examples</a>{{template "li-end"}}
+	{{template "list-end"}}
+{{template "section-end"}}
+
+
+{{template "perma-section" section "Install Go"}}
+	<p>Install the latest version of Go from <a href="http://golang.org/doc/install">here</a>.</p>
+	<p>Set the environment variable GOPATH, for example:</p>
+	{{template "list"}}
+		{{template "li-code"}}C:\Users\joe\Desktop\godev{{template "li-code-end"}}
+	{{template "list-end"}}
+{{template "section-end"}}
+
+
+{{template "perma-section" section "Install Git"}}
+	<p>Install git (use default installation options) from <a href="http://git-scm.com/downloads">here</a>.</p>
+	<p>(32-bit Windows) Add git to the PATH environment variable:</p>
+	{{template "list"}}
+		{{template "li-code"}}C:\Program Files\Git\bin{{template "li-code-end"}}
+	{{template "list-end"}}
+	<p>(64-bit Windows) Add git to the PATH environment variable:</p>
+	{{template "list"}}
+		{{template "li-code"}}C:\Program Files (x86)\Git\bin{{template "li-code-end"}}
+	{{template "list-end"}}
+{{template "section-end"}}
+
+
+{{template "perma-section" section "Install MinGW (32-bit Windows)"}}
+	<p>Download "mingw-get-setup.exe" from <a href="http://sourceforge.net/projects/mingw/files/">here</a>. Install using the default options, then launch the program and select the following:</p>
+	<table>
+		<thead><td>Package</td><td>Class</td></thead>
+		<tr><td>mingw32-base</td><td>bin</td></tr>
+		<tr><td>mingw32-gcc-g++</td><td>bin</td></tr>
+		<tr><td>mingw32-gcc-g++</td><td>dev</td></tr>
+	</table>
+	{{template "list"}}
+		{{template "li"}}Click "Installation -> Apply Changes"{{template "li-end"}}
+		{{template "li"}}Click "Apply"{{template "li-end"}}
+		{{template "li"}}Wait for downloading to finish, then close the application.{{template "li-end"}}
+	{{template "list-end"}}
+	<p>Add MinGW to the PATH environment variable:</p>
+	{{template "list"}}
+		{{template "li-code"}}C:\MinGW\bin{{template "li-code-end"}}
+	{{template "list-end"}}
+{{template "section-end"}}
+
+
+{{template "perma-section" section "Install MinGW (64-bit Windows)"}}
+	<p>For a amd64 mingw compiler we reccomend the pre-built binaries found <a href="http://sourceforge.net/projects/mingwbuilds/files/host-windows/releases/4.8.0/64-bit/threads-posix/seh/x64-4.8.0-release-posix-seh-rev2.7z/download">here</a>.</p>
+	<p>You can download <a href="http://downloads.sourceforge.net/sevenzip/7z920-x64.msi">7-zip</a> to extract the compressed archive.</p>
+	<p>Extract the mingw64 folder into:</p>
+	{{template "list"}}
+		{{template "li-code"}}C:\mingw64{{template "li-code-end"}}
+	{{template "list-end"}}
+	<p>Add MinGW to the PATH environment variable:</p>
+	{{template "list"}}
+		{{template "li-code"}}C:\mingw64\bin{{template "li-code-end"}}
+	{{template "list-end"}}
+{{template "section-end"}}
+
+
+{{template "perma-section" section "Compiling The Examples"}}
+	<p>You are almost finished! Download, compile, and run the examples by following the steps <a href="/doc/install">here</a>.</p>
+{{template "section-end"}}
+
+{{template "bottom.tmpl"}}
+

@@ -1,0 +1,31 @@
+{{template "top.tmpl"}}
+
+{{template "section" section "A 3D game engine written in Go!"}}
+	{{template "list"}}
+		{{template "li"}}State of the art shader-based modern 3D game engine.{{template "li-end"}}
+		{{template "li"}}Cross-platform, Windows and Linux <a href="/doc/platform-support.html">support</a>.{{template "li-end"}}
+		{{template "li"}}OpenGL 2.x based renderer.{{template "li-end"}}
+		{{template "li"}}3D audio via OpenAL.{{template "li-end"}}
+	{{template "list-end"}}
+{{template "section-end"}}
+
+
+{{template "perma-section" section "Installation"}}
+	{{template "list"}}
+		{{template "li-code"}}go get azul3d.org/examples/...{{template "li-code-end"}}
+		{{template "li-code"}}go install azul3d.org/examples/...{{template "li-code-end"}}
+		{{template "li"}}<a href="/doc/install">Installation Guides</a>{{template "li-end"}}
+	{{template "list-end"}}
+{{template "section-end"}}
+
+
+{{template "perma-section" section "News"}}
+	{{template "list"}}
+		{{template "li"}}<a href="/news/2014/important-import-paths-have-changed.html">Important - Import Paths Have Changed</a>{{template "li-end"}}
+		{{template "li"}}<a href="/news/2014/moving-from-google-code-to-github.html">Moving From Google Code To GitHub</a>{{template "li-end"}}
+		{{template "li"}}<a href="/news/">&gt;&gt;&gt;&nbsp;more news</a>{{template "li-end"}}
+	{{template "list-end"}}
+{{template "section-end"}}
+
+{{template "bottom.tmpl"}}
+

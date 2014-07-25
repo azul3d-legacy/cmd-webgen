@@ -1,0 +1,34 @@
+{{template "top.tmpl"}}
+
+{{template "section" section "Packages"}}
+	<p>Below is a list of all packages provided by Azul3D. Clicking a version number for a package will bring you to detailed documentation about that version of the package and also show you it's direct import path.</p>
+	{{template "list"}}
+		{{range $index, $p := .Packages}}
+			{{template "li"}}<a href="#{{call $.ID $p.RelPkgPath}}">{{$p.RelPkgPath}}</a>{{template "li-end"}}
+		{{end}}
+	{{template "list-end"}}
+{{template "section-end"}}
+
+
+{{range $index, $p := .Packages}}
+	{{template "perma-section" section $p.RelPkgPath (call $.ID $p.RelPkgPath) "pkg-index" "pkg-index"}}
+		<p>{{index $.Synopses $index}}</p>
+		{{template "list"}}
+			{{range $index, $v := $p.VersionTags}}
+				{{$url := printf "%s.%s" $p.RelPkgPath $v}}
+				{{if eq $v "v0"}}
+					{{template "li"}}<a href="/{{$url}}">{{$v}}</a> (in development){{template "li-end"}}
+				{{else}}
+					{{if eq $v (index $p.VersionTags 0)}}
+						{{template "li"}}<a href="/{{$url}}">{{$v}}</a> (latest version){{template "li-end"}}
+					{{else}}
+						{{template "li"}}<a href="/{{$url}}">{{$v}}</a>{{template "li-end"}}
+					{{end}}
+				{{end}}
+			{{end}}
+		{{template "list-end"}}
+	{{template "section-end"}}
+{{end}}
+
+{{template "bottom.tmpl"}}
+

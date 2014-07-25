@@ -1,0 +1,99 @@
+<!--
+	Copyright 2014 The Azul3D Authors. All rights reserved.
+	Use of this source code is governed by a BSD-style
+	license that can be found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<!-- Page Data -->
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<meta name="description" content="A 3D game engine written in Go!">
+		<meta name="author" content="The Azul3D Authors">
+		<title>Azul3D</title>
+		<link rel="shortcut icon" href="/content/favicon.png"> 
+
+		<!-- Reset -->
+		<link rel="stylesheet" type="text/css" href="/content/reset.css">
+
+		<!-- Google Fonts -->
+		<link href='http://fonts.googleapis.com/css?family=Audiowide' rel='stylesheet' type='text/css'>
+		<link href='http://fonts.googleapis.com/css?family=Cutive+Mono' rel='stylesheet' type='text/css'>
+
+		<!-- DejaVu font -->
+		<link href='/content/dejavusans_book/stylesheet.css' rel='stylesheet' type='text/css'>
+
+		<!-- Brandico -->
+		<link href='/content/brandico/brandico.css' rel='stylesheet' type='text/css'>
+
+		<!-- IE fixes -->
+		<!--[if lt IE 9]>
+			<script src="/content/html5shiv.min.js"></script>
+		<![endif]-->
+
+		<!-- JQuery -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+		<!-- Site Content -->
+		<link rel="stylesheet" type="text/css" href="/content/stylesheet.css">
+		<link rel="stylesheet" type="text/css" href="/content/mq.css">
+	</head>
+	<body>
+
+<!-- Anchor for jumping to top of page -->
+<div id="top"></div>
+
+{{define "ext-url-mailing-list"}}https://groups.google.com/forum/#!forum/azul3d{{end}}
+{{define "ext-url-facebook"}}https://www.facebook.com/pages/Azul3D/651643168254798{{end}}
+{{define "ext-url-twitter"}}https://twitter.com/hashtag/azul3d{{end}}
+
+{{define "ext-url-github"}}https://github.com/azul3d{{end}}
+{{define "ext-url-issues"}}{{template "ext-url-github"}}/issues/issues{{end}}
+{{define "ext-url-appengine-repo"}}{{template "ext-url-github"}}/appengine{{end}}
+{{define "ext-url-webgen-repo"}}{{template "ext-url-github"}}/webgen{{end}}
+
+{{define "biohazard"}}<span class="biohazard">☣</span>{{end}}
+{{define "spacehazard"}}{{template "biohazard"}}&nbsp;&nbsp;{{end}}
+
+
+{{define "perma-section"}}<h1 id="{{.ID}}" class="hdr {{.HdrClass}}"><a href="#{{.ID}}" title="permalink">»</a>&nbsp;{{.Name}} <span class="toplink">(<a href="#top">top</a>)</span></h1>
+<span class="section {{.Class}}">{{end}}
+
+{{define "section"}}<h1 class="hdr {{.HdrClass}}">{{.Name}}</h1>
+<span class="section {{.Class}}">{{end}}
+{{define "section-end"}}</span>{{end}}
+
+{{define "list"}}<span class="list">{{end}}
+{{define "list-end"}}</span>{{end}}
+{{define "li"}}<span class="item">{{template "spacehazard"}}<span class="content">{{end}}
+{{define "li-indent"}}<span class="item indent">{{template "spacehazard"}}<span class="content">{{end}}
+{{define "li-end"}}</span></span>{{end}}
+
+{{define "li-code"}}{{template "li"}}<span class="code">{{end}}
+{{define "li-code-end"}}</span>{{template "li-end"}}{{end}}
+
+<div id="toparea">
+	<div id="logo">
+		<a href="/">{{template "biohazard"}}
+		<span>Azul3D</span></a>
+	</div>
+
+	<div id="shortbar">
+		<a href="{{template "ext-url-github"}}" target="_blank"><i class="icon-github menuIcon"></i><div class="title">GitHub</div></a>
+		<a href="{{template "ext-url-twitter"}}" target="_blank"><i class="icon-twitter-bird menuIcon"></i><div class="title">Twitter</div></a>
+		<a href="{{template "ext-url-facebook"}}" target="_blank"><i class="icon-facebook menuIcon"></i><div class="title">Facebook</div></a>
+		<a href="{{template "ext-url-mailing-list"}}" target="_blank" class="mail"><i class="menuIcon mailIcon">✉</i><div class="title">Mailing List</div></a>
+	</div>
+</div>
+
+<div id="navigation">
+	<h1>Navigation</h1>
+	{{template "list"}}
+		{{template "li"}}<a href="/">Home</a>{{template "li-end"}}
+		{{template "li"}}<a href="/news">News</a>{{template "li-end"}}
+		{{template "li"}}<a href="/packages.html">Packages</a>{{template "li-end"}}
+		{{template "li"}}<a href="/doc/faq.html">FAQ</a>{{template "li-end"}}
+	{{template "list-end"}}
+</div>
+

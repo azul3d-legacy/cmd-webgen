@@ -1,0 +1,25 @@
+{{template "top.tmpl"}}
+
+{{template "section" section "Installation"}}
+	<p>Azul3D is installed via the standard <a href="https://golang.org/cmd/go/">go tool</a>. To download the example source code run:</p>
+	{{template "list"}}
+		{{template "li-code"}}go get azul3d.org/examples/...{{template "li-code-end"}}
+	{{template "list-end"}}
+	<p>And to install the example binaries into the $GOPATH bin directory run:</p>
+	{{template "list"}}
+		{{template "li-code"}}go install azul3d.org/examples/...{{template "li-code-end"}}
+	{{template "list-end"}}
+{{template "section-end"}}
+
+
+{{template "perma-section" section "Detailed Guides"}}
+	<p>Azul3D does require installation of a few system tools and libraries (gcc/mingw, freetype, etc). For this reason we provide detailed installation instructions for each <a href="/doc/platform-support.html">supported platform</a>:</p>
+
+	{{template "list"}}
+		{{template "li"}}<a href="/doc/install/windows.html">Windows (386 / amd64)</a>{{template "li-end"}}
+		{{template "li"}}<a href="/doc/install/linux.html">Linux (386 / amd64)</a>{{template "li-end"}}
+	{{template "list-end"}}
+{{template "section-end"}}
+
+{{template "bottom.tmpl"}}
+

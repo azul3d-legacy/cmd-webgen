@@ -1,0 +1,52 @@
+{{template "top.tmpl"}}
+
+{{template "section" section "Linux Installation"}}
+	<p>What follows is a detailed step-by-step guide on installing Azul3D on a Linux 386/amd64 platform. For other platforms please see <a href="/doc/install">this page</a>.</p>
+
+	{{template "list"}}
+		{{template "li"}}<a href="#install-go">Install Go</a>{{template "li-end"}}
+		{{template "li"}}<a href="#dependencies">Dependencies</a>{{template "li-end"}}
+		{{template "li"}}<a href="#ubuntu-14-04">Ubuntu 14.04</a>{{template "li-end"}}
+		{{template "li"}}<a href="#compiling-the-examples">Compiling The Examples</a>{{template "li-end"}}
+	{{template "list-end"}}
+{{template "section-end"}}
+
+
+{{template "perma-section" section "Install Go"}}
+	<p>Install the latest version of Go from <a href="http://golang.org/doc/install">here</a>.</p>
+	<p>Set the environment variable GOPATH, for example:</p>
+	{{template "list"}}
+		{{template "li-code"}}/home/joe/godev{{template "li-code-end"}}
+	{{template "list-end"}}
+{{template "section-end"}}
+
+
+{{template "perma-section" section "Dependencies"}}
+	{{template "list"}}
+		{{template "li"}}Go 1.3{{template "li-end"}}
+		{{template "li"}}git (to clone the source code).{{template "li-end"}}
+		{{template "li"}}gcc{{template "li-end"}}
+		{{template "li"}}OpenGL development files{{template "li-end"}}
+		{{template "li"}}libx11 development files{{template "li-end"}}
+		{{template "li"}}libx11-xcb development files{{template "li-end"}}
+		{{template "li"}}libxcb development files (including icccm, image, randr, render-util, and xcb-xkb parts){{template "li-end"}}
+		{{template "li"}}libfreetype, libbz2 and libzip static libraries and headers{{template "li-end"}}
+	{{template "list-end"}}
+	<p>Single-line installers for dependencies are provided below. If your distro is not listed here please help us by <a href="{{template "ext-url-issues"}}">creating an issue</a>.</p>
+{{template "section-end"}}
+
+
+{{template "perma-section" section "Ubuntu 14.04"}}
+	<p>Using apt-get on Ubuntu 14.04 you can install all of the dependencies by running:</p>
+	{{template "list"}}
+		{{template "li-code"}}sudo apt-get install build-essentials git mesa-common-dev libx11-dev libx11-xcb-dev libxcb-icccm4-dev libxcb-image0-dev libxcb-randr0-dev libxcb-render-util0-dev libxcb-xkb-dev libfreetype6-dev libbz2-dev{{template "li-code-end"}}
+	{{template "list-end"}}
+{{template "section-end"}}
+
+
+{{template "perma-section" section "Compiling The Examples"}}
+	<p>You are almost finished! Download, compile, and run the examples by following the steps <a href="/doc/install">here</a>.</p>
+{{template "section-end"}}
+
+{{template "bottom.tmpl"}}
+
