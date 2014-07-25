@@ -17,6 +17,7 @@ var (
 	ignoredRepos   = map[string]bool{
 		"azul3d.github.io": true,
 		"issues":           true,
+		"cmd-webgen":       true,
 	}
 
 	API_TOKEN = os.Getenv("GITHUB_API_TOKEN")
