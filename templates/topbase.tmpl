@@ -74,7 +74,7 @@
 {{define "li-code-end"}}</span>{{template "li-end"}}{{end}}
 
 
-{{define "import-path-examples"}}azul3d.org/examples.v1/...{{end}}
+{{define "import-path-examples"}}azul3d.org/examples.v1{{end}}
 {{define "install-azul3d"}}
 	<p>Azul3D is installed via the standard <a href="https://golang.org/cmd/go/">go tool</a>. To download the example source code run:</p>
 	{{template "list"}}
@@ -82,7 +82,7 @@
 	{{template "list-end"}}
 	<p>And to install the example binaries into the $GOPATH bin directory run:</p>
 	{{template "list"}}
-		{{template "li-code"}}go install {{template "import-path-examples"}}{{template "li-code-end"}}
+		{{template "li-code"}}go install {{template "import-path-examples"}}/...{{template "li-code-end"}}
 	{{template "list-end"}}
 {{end}}
 
