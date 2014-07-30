@@ -193,6 +193,20 @@ func genPkgDoc(relPkgPath, thisVersionTag string, versions []string) (error, str
 }
 
 func genPkgIndex(importables sortedImportables) (error, string) {
+	searching := true
+search:
+	for searching {
+		for i, imp := range importables {
+			if len(imp.VersionTags) == 1 && imp.VersionTags[0] == "v0" {
+				// Only has version zero tag (i.e. package not released yet).
+				// Do not index it on the packages page.
+				importables = append(importables[:i], importables[i+1:]...)
+				continue search
+			}
+		}
+		searching = false
+	}
+
 	// Map used to serve templates with data.
 	tmplData := make(map[string]interface{}, 32)
 
