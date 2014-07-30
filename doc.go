@@ -14,11 +14,13 @@ import (
 	"html/template"
 	"log"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"regexp"
 	"sort"
 	"strconv"
 	"strings"
+	"sync"
 )
 
 var sectionRe = regexp.MustCompile("[^A-Za-z0-9 -]+")
@@ -263,6 +265,20 @@ func (s sortedImportables) Less(i, j int) bool {
 	return s[i].RelPkgPath < s[j].RelPkgPath
 }
 
+// runs "go get -u <path>" to download/update source code.
+func gogetu(path string) (err error, stdout, stderr *bytes.Buffer) {
+	stdout = new(bytes.Buffer)
+	stderr = new(bytes.Buffer)
+
+	fmt.Fprintf(stdout, "    go get -u %s\n", path)
+	cmd := exec.Command("go", "get", "-u", path)
+	cmd.Stdout = stdout
+	cmd.Stderr = stderr
+	//cmd.Stdout = prefixWriter{out: os.Stdout, prefix: []byte("        ")}
+	//cmd.Stderr = prefixWriter{out: os.Stderr, prefix: []byte("        ")}
+	return cmd.Run(), stdout, stderr
+}
+
 func generateDocs() error {
 	log.Println("Scanning github repositories...")
 	repos, err := fetchRepos(ghClient)
@@ -300,15 +316,23 @@ func generateDocs() error {
 		log.Println("Skipping updates of local repositories (-update=false).")
 	} else {
 		log.Println("Updating local repositories...")
+		var wg sync.WaitGroup
 		for repoName, repo := range repos {
 			for _, tag := range repo.Tags {
 				path := importURL(repoName, *tag.Name)
-				err := gogetu(path)
-				if err != nil {
-					log.Println("        -> ERROR", err)
-				}
+				wg.Add(1)
+				go func() {
+					defer wg.Done()
+					err, stdout, stderr := gogetu(path)
+					stdout.WriteTo(os.Stdout)
+					stderr.WriteTo(os.Stderr)
+					if err != nil {
+						log.Println("        -> ERROR", err)
+					}
+				}()
 			}
 		}
+		wg.Wait()
 		log.Println("    done.")
 	}
 

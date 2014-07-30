@@ -14,7 +14,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"strings"
 )
@@ -92,15 +91,6 @@ func (p prefixWriter) Write(b []byte) (int, error) {
 		return 0, err
 	}
 	return p.out.Write(b)
-}
-
-// runs "go get -u <path>" to download/update source code.
-func gogetu(path string) error {
-	log.Printf("    go get -u %s", path)
-	cmd := exec.Command("go", "get", "-u", path)
-	cmd.Stdout = prefixWriter{out: os.Stdout, prefix: []byte("        ")}
-	cmd.Stderr = prefixWriter{out: os.Stderr, prefix: []byte("        ")}
-	return cmd.Run()
 }
 
 var (
