@@ -41,6 +41,14 @@ func collectValues(pkg *doc.Package, fset *token.FileSet) (vars, consts []*parse
 	for _, v := range pkg.Vars {
 		vars = append(vars, parseValue(v, fset))
 	}
+	for _, t := range pkg.Types {
+		for _, v := range t.Consts {
+			consts = append(consts, parseValue(v, fset))
+		}
+		for _, v := range t.Vars {
+			vars = append(vars, parseValue(v, fset))
+		}
+	}
 	sort.Sort(sortedValues(consts))
 	sort.Sort(sortedValues(vars))
 	return
