@@ -81,7 +81,7 @@
 	<p>Azul3D is installed via the standard <a href="https://golang.org/cmd/go/">go tool</a>. To download and compile the example source code run:</p>
 	{{template "list"}}
 		{{template "li-code"}}go get {{template "import-path-examples"}}{{template "li-code-end"}}
-		{{template "li-code"}}go install {{template "import-path-examples"}}/...{{template "li-code-end"}}
+		{{template "li-code"}}go get {{template "import-path-examples"}}/...{{template "li-code-end"}}
 	{{template "list-end"}}
 	<p>The example binaries will be placed into the $GOPATH/bin directory.</p>
 {{end}}
