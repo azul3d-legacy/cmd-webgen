@@ -164,7 +164,8 @@ func genPkgDoc(relPkgPath, thisVersionTag string, versions []string) (error, str
 
 	// Collect source files.
 	absPackageRoot := filepath.Join(GOPATH, "src", path)
-	sourceURL := filepath.Join("https://github.com", githubOrg, relPkgPath, "blob", thisVersionTag)
+	dashedPkgPath := strings.Replace(relPkgPath, "/", "-", -1)
+	sourceURL := filepath.Join("https://github.com", githubOrg, dashedPkgPath, "blob", thisVersionTag)
 	generic, tagged, err := collectSources(absPackageRoot, sourceURL, pkg)
 	if err != nil {
 		return err, ""
