@@ -7,6 +7,7 @@
 		{{template "li"}}<a href="#install-go">Install Go</a>{{template "li-end"}}
 		{{template "li"}}<a href="#dependencies">Dependencies</a>{{template "li-end"}}
 		{{template "li"}}<a href="#ubuntu-14-04">Ubuntu 14.04</a>{{template "li-end"}}
+		{{template "li"}}<a href="#arch-linux">Arch Linux</a>{{template "li-end"}}
 		{{template "li"}}<a href="#compiling-the-examples">Compiling The Examples</a>{{template "li-end"}}
 	{{template "list-end"}}
 {{template "section-end"}}
@@ -40,6 +41,14 @@
 	<p>Using apt-get on Ubuntu 14.04 you can install all of the dependencies by running:</p>
 	{{template "list"}}
 		{{template "li-code"}}sudo apt-get install build-essentials git mesa-common-dev libx11-dev libx11-xcb-dev libxcb-icccm4-dev libxcb-image0-dev libxcb-randr0-dev libxcb-render-util0-dev libxcb-xkb-dev libfreetype6-dev libbz2-dev{{template "li-code-end"}}
+	{{template "list-end"}}
+{{template "section-end"}}
+
+
+{{template "perma-section" section "Arch Linux"}}
+	<p>Using pacman on Arch Linux you can install all of the dependencies by running:</p>
+	{{template "list"}}
+		{{template "li-code"}}pacman -Sy base-devel git mesa libx11 libxcb xcb-util-wm xcb-util-image libxrandr xcb-util-renderutil libxkbcommon-x11 freetype2 bzip2{{template "li-code-end"}}
 	{{template "list-end"}}
 {{template "section-end"}}
 
