@@ -1,17 +1,18 @@
 {{template "top.tmpl"}}
 
 {{template "section" section "Installation"}}
-	{{template "install-azul3d"}}
-{{template "section-end"}}
-
-
-{{template "perma-section" section "Detailed Guides"}}
 	<p>Azul3D does require installation of a few system tools and libraries (gcc/mingw, freetype, etc). For this reason we provide detailed installation instructions for each <a href="/doc/platform-support.html">supported platform</a>:</p>
 
 	{{template "list"}}
 		{{template "li"}}<a href="/doc/install/windows.html">Windows (386 / amd64)</a>{{template "li-end"}}
 		{{template "li"}}<a href="/doc/install/linux.html">Linux (386 / amd64)</a>{{template "li-end"}}
 	{{template "list-end"}}
+{{template "section-end"}}
+
+
+{{template "perma-section" section "Advanced"}}
+	<p>If you're an advanced user <em><strong>and you know that you've installed the required system dependencies</strong></em>, then you can simply use the Go tool immediately:</p>
+	{{template "install-azul3d"}}
 {{template "section-end"}}
 
 {{template "bottom.tmpl"}}
