@@ -36,7 +36,7 @@
 
 
 {{template "perma-section" section "What does it provide?"}}
-	<p>Azul3D provides a set of packages for developing games and other interactive 2D or 3D applications in Go, a list of those packages and their documentation can be found <a href="/pkg">here</a>.</p>
+	<p>Azul3D provides a set of packages for developing games and other interactive 2D or 3D applications in Go, a list of those packages and their documentation can be found <a href="/packages.html">here</a>.</p>
 {{template "section-end"}}
 
 
@@ -64,12 +64,13 @@
 		{{template "li"}}Azul3D uses a multi-threaded renderer, providing yet-another level of buffering (application logic and the renderer operate independently).{{template "li-end"}}
 		{{template "li"}}GC pause times are often small, and much of the time negligible. If a developer pays special care to not make lots of garbage, all the better.{{template "li-end"}}
 		{{template "li"}}Go 1.3 introduced <a href="http://www.golang.org/pkg/sync/#Pool">sync.Pool</a>, a garbage collector aware free list which allows developers to alleviate GC pressure by re-using old already allocated objects.{{template "li-end"}}
+		{{template "li"}}The goal of the Go 1.5 (June 2015) Garbage Collector (GC) is to reduce GC latency, making Go acceptable for implementing a broad spectrum of systems requiring low response times. For further details please refer to the following design document: <a href="http://golang.org/s/go14gc">Go 1.4+ Garbage Collection (GC) Plan and Roadmap</a>.{{template "li-end"}}
 	{{template "list-end"}}
 {{template "section-end"}}
 
 
 {{template "perma-section" section "Does it have a level editor?"}}
-	<p>No, and it likely never will. Azul3D is for programmers and doesn't provide GUI-editors. With that being said, there may be importers in the future for 3D modelers which will make importing scenes from those 3D modelers (such as Blender) into Azul3D trivial.</p> 
+	<p>No, and it likely never will. Azul3D is for programmers and doesn't provide GUI-editors. With that being said, there may be importers in the future for 3D modelers which will make importing scenes from those 3D modelers (such as Blender) into Azul3D trivial.</p>
 {{template "section-end"}}
 
 
