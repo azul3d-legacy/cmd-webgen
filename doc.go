@@ -20,7 +20,6 @@ import (
 	"sort"
 	"strconv"
 	"strings"
-	"sync"
 )
 
 var sectionRe = regexp.MustCompile("[^A-Za-z0-9 -]+")
@@ -200,8 +199,8 @@ func genPkgIndex(importables sortedImportables) (error, string) {
 search:
 	for searching {
 		for i, imp := range importables {
-			if len(imp.VersionTags) == 1 && imp.VersionTags[0] == "v0" {
-				// Only has version zero tag (i.e. package not released yet).
+			if len(imp.VersionTags) == 1 && imp.VersionTags[0] == "dev" {
+				// Only has dev version tag (i.e. package not released yet).
 				// Do not index it on the packages page.
 				importables = append(importables[:i], importables[i+1:]...)
 				continue search
@@ -298,11 +297,10 @@ func generateDocs() error {
 			log.Printf("    found repo %q - %s\n", repoName, *repo.URL)
 		}
 
-		// Add implicit version zero (development version / tip) tag to the
-		// slice.
-		v0 := "v0"
+		// Add implicit development version tag to the slice.
+		dev := "dev"
 		repo.Tags = append(repo.Tags, github.RepositoryTag{
-			Name: &v0,
+			Name: &dev,
 		})
 		repos[repoName] = repo
 
@@ -317,23 +315,17 @@ func generateDocs() error {
 		log.Println("Skipping updates of local repositories (-update=false).")
 	} else {
 		log.Println("Updating local repositories...")
-		var wg sync.WaitGroup
 		for repoName, repo := range repos {
 			for _, tag := range repo.Tags {
 				path := importURL(repoName, *tag.Name)
-				wg.Add(1)
-				go func() {
-					defer wg.Done()
-					err, stdout, stderr := gogetu(path)
-					stdout.WriteTo(os.Stdout)
-					stderr.WriteTo(os.Stderr)
-					if err != nil {
-						log.Println("        -> ERROR", err)
-					}
-				}()
+				err, stdout, stderr := gogetu(path)
+				stdout.WriteTo(os.Stdout)
+				stderr.WriteTo(os.Stderr)
+				if err != nil {
+					log.Println("        -> ERROR", err)
+				}
 			}
 		}
-		wg.Wait()
 		log.Println("    done.")
 	}
 

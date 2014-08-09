@@ -54,12 +54,12 @@
 	{{else}}
 		<p>You are viewing an older version of this package ({{.VersionTag}}).</p>
 	{{end}}
-	<p>Other versions of this package are available as follows. Version zero (v0) is the in-development version of this package and should not generally be used (see <a href="/doc/versioning.html#development-versions">here</a> for more details).</p>
+	<p>Other versions of this package are available as follows. <em>Dev</em> is the in-development version of this package and should not generally be used (see <a href="/doc/versioning.html#development-versions">here</a> for more details).</p>
 	{{template "list"}}
 		{{range $i, $v := .Versions}}
 			{{$relURL := printf "%s.%s" $.RelPkgPath $v}}
 			{{$fullURL := filepathJoin $.BaseImport $relURL}}
-			{{if eq $v "v0"}}
+			{{if eq $v "dev"}}
 				{{template "li"}}<a href="{{$relURL}}" title="{{$fullURL}}">{{$v}}</a> (in development){{template "li-end"}}
 			{{else}}
 				{{if eq $i 0}}

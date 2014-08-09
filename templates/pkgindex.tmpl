@@ -16,7 +16,7 @@
 		{{template "list"}}
 			{{range $index, $v := $p.VersionTags}}
 				{{$url := printf "%s.%s" $p.RelPkgPath $v}}
-				{{if eq $v "v0"}}
+				{{if eq $v "dev"}}
 					{{template "li"}}<a href="/{{$url}}">{{$v}}</a> (in development){{template "li-end"}}
 				{{else}}
 					{{if eq $v (index $p.VersionTags 0)}}
