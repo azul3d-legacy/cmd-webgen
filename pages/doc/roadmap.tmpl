@@ -1,0 +1,48 @@
+{{template "top.tmpl"}}
+
+{{define "issue"}}https://github.com/azul3d/issues/issues{{end}}
+
+{{template "section" section "Roadmap"}}
+	<p>This page describes where Azul3D is heading in the future. Some of these items may be developed sooner than others, some might not be developed at all. It's an ideal list.</p>
+	{{template "list"}}
+		{{template "li"}}<a href="#future-platforms">Future Platforms</a>{{template "li-end"}}
+		{{template "li"}}<a href="#model-loader">Model Loader</a>{{template "li-end"}}
+		{{template "li"}}<a href="#user-interface">User Interface</a>{{template "li-end"}}
+		{{template "li"}}<a href="#sprite-rendering">Sprite Rendering</a>{{template "li-end"}}
+		{{template "li"}}<a href="#bullet-physics">Bullet Physics</a>{{template "li-end"}}
+	{{template "list-end"}}
+{{template "section-end"}}
+
+
+{{template "perma-section" section "Future Platforms"}}
+	<p>In the future, we would like to support the following platforms:</p>
+	{{template "list"}}
+		{{template "li"}}<a href="{{template "issue"}}/5">Mac OS X</a>{{template "li-end"}}
+		{{template "li"}}<a href="{{template "issue"}}/9">Android</a>{{template "li-end"}}
+		{{template "li"}}<a href="{{template "issue"}}/11">iOS</a>{{template "li-end"}}
+	{{template "list-end"}}
+{{template "section-end"}}
+
+
+{{template "perma-section" section "Model Loader"}}
+	<p>To make great games, Azul3D will need a 3D model loader capable of loading static and animated 3D models / scenes. Ideally it will have an exporter for the Blender 3D suite. Track progress <a href="{{template "issue"}}/12">here</a>.</p>
+{{template "section-end"}}
+
+
+{{template "perma-section" section "User Interface"}}
+	<p>Many game engines today provide user interfaces -- but they are often lacking in several areas. Azul3D could accel and provide a robust user interface library suitable for games and many other types of applications. Track progress <a href="{{template "issue"}}/14">here</a>.</p>
+{{template "section-end"}}
+
+
+{{template "perma-section" section "Sprite Rendering"}}
+	<p>Azul3D could provide the ability to render simple static or animated sprites. Track progress <a href="{{template "issue"}}/15">here</a>.</p>
+{{template "section-end"}}
+
+
+{{template "perma-section" section "Bullet Physics"}}
+	<p>Bullet is the leading open source 3D physics engine. For 3D games Azul3D should provide a nice Go wrapper to the Bullet physics engine. Track progress <a href="{{template "issue"}}/16">here</a>.</p>
+{{template "section-end"}}
+
+
+{{template "bottom.tmpl"}}
+
