@@ -7,6 +7,7 @@
 		{{template "li"}}<a href="#install-go">Install Go</a>{{template "li-end"}}
 		{{template "li"}}<a href="#dependencies">Dependencies</a>{{template "li-end"}}
 		{{template "li"}}<a href="#ubuntu-14-04">Ubuntu 14.04</a>{{template "li-end"}}
+		{{template "li"}}<a href="#ubuntu-13-10">Ubuntu 13.10</a>{{template "li-end"}}
 		{{template "li"}}<a href="#arch-linux">Arch Linux</a>{{template "li-end"}}
 		{{template "li"}}<a href="#compiling-the-examples">Compiling The Examples</a>{{template "li-end"}}
 	{{template "list-end"}}
@@ -39,6 +40,20 @@
 
 {{template "perma-section" section "Ubuntu 14.04"}}
 	<p>Using apt-get on Ubuntu 14.04 you can install all of the dependencies by running:</p>
+	{{template "list"}}
+		{{template "li-code"}}sudo apt-get install build-essential git mesa-common-dev libx11-dev libx11-xcb-dev libxcb-icccm4-dev libxcb-image0-dev libxcb-randr0-dev libxcb-render-util0-dev libxcb-xkb-dev libfreetype6-dev libbz2-dev{{template "li-code-end"}}
+	{{template "list-end"}}
+{{template "section-end"}}
+
+
+{{template "perma-section" section "Ubuntu 13.10"}}
+	<p>With Ubuntu 13.10, you need to add the xorg-edgers PPA for the libxkb-xcb-dev package:</p>
+	{{template "list"}}
+		{{template "li-code"}}sudo add-apt-repository ppa:xorg-edgers/ppa{{template "li-code-end"}}
+		{{template "li-code"}}sudo apt-get update{{template "li-code-end"}}
+	{{template "list-end"}}
+
+	<p>Then you can use apt-get to install everything:</p>
 	{{template "list"}}
 		{{template "li-code"}}sudo apt-get install build-essential git mesa-common-dev libx11-dev libx11-xcb-dev libxcb-icccm4-dev libxcb-image0-dev libxcb-randr0-dev libxcb-render-util0-dev libxcb-xkb-dev libfreetype6-dev libbz2-dev{{template "li-code-end"}}
 	{{template "list-end"}}
