@@ -7,7 +7,6 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"github.com/google/go-github/github"
 	"go/doc"
 	"go/parser"
 	"go/token"
@@ -20,6 +19,8 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+
+	"github.com/google/go-github/github"
 )
 
 var sectionRe = regexp.MustCompile("[^A-Za-z0-9 -]+")

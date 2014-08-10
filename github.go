@@ -5,10 +5,11 @@
 package main
 
 import (
-	"github.com/google/go-github/github"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/google/go-github/github"
 )
 
 var (

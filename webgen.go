@@ -5,9 +5,7 @@
 package main
 
 import (
-	"code.google.com/p/goauth2/oauth"
 	"flag"
-	"github.com/google/go-github/github"
 	"html/template"
 	"io"
 	"io/ioutil"
@@ -16,6 +14,9 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"code.google.com/p/goauth2/oauth"
+	"github.com/google/go-github/github"
 )
 
 // TODO:
