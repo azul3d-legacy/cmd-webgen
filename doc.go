@@ -196,6 +196,11 @@ func genPkgDoc(relPkgPath, thisVersionTag string, versions []string) (error, str
 }
 
 func genPkgIndex(importables sortedImportables) (error, string) {
+	// Make copy of slice before deleting elements below.
+	cpy := make(sortedImportables, len(importables))
+	copy(cpy, importables)
+	importables = cpy
+
 	searching := true
 search:
 	for searching {
