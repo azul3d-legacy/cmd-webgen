@@ -16,13 +16,18 @@ var (
 	ghOrganization = "azul3d"
 	baseImport     = "azul3d.org/"
 	ignoredRepos   = map[string]bool{
-		"azul3d.github.io":  true,
-		"appengine":         true,
-		"issues":            true,
+		"azul3d.github.io": true,
+		"appengine":        true,
+		"issues":           true,
+		"examples":         true,
+		"cmd-webgen":       true,
+
+		// Deprecated packages.
 		"thirdparty-resize": true,
-		"cmd-webgen":        true,
 		"cmd-glwrap":        true,
-		"examples":          true,
+		"native-gl":         true,
+		"native-gles2":      true,
+		"chippy":            true,
 	}
 
 	API_TOKEN = os.Getenv("GITHUB_API_TOKEN")
