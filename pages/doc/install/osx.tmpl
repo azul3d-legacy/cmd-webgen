@@ -1,0 +1,38 @@
+{{template "top.tmpl"}}
+
+{{template "section" section "OS X Installation"}}
+	<p>What follows is a detailed step-by-step guide on installing Azul3D on a Mac OS X platform. For other platforms please see <a href="/doc/install">the installation page</a>.</p>
+
+	{{template "list"}}
+		{{template "li"}}<a href="#install-go">Install Go</a>{{template "li-end"}}
+		{{template "li"}}<a href="#dependencies">Dependencies</a>{{template "li-end"}}
+		{{template "li"}}<a href="#compiling-the-examples">Compiling The Examples</a>{{template "li-end"}}
+	{{template "list-end"}}
+{{template "section-end"}}
+
+
+{{template "perma-section" section "Install Go"}}
+	<p>Install the latest version of Go from <a href="http://golang.org/doc/install">here</a>.</p>
+	{{template "required-go-version"}}
+	<p>Set the environment variable GOPATH, for example:</p>
+	{{template "list"}}
+		{{template "li-code"}}/home/joe/godev{{template "li-code-end"}}
+	{{template "list-end"}}
+{{template "section-end"}}
+
+
+{{template "perma-section" section "Dependencies"}}
+	<p>Xcode must be installed from the <a href="https://itunes.apple.com/us/app/xcode/id497799835?mt=12">App Store</a>.</p>
+	<p>Brew can be used to install the remaining dependencies (which at this time is just FreeType):</p>
+	{{template "list"}}
+		{{template "li-code"}}brew install freetype{{template "li-code-end"}}
+	{{template "list-end"}}
+{{template "section-end"}}
+
+
+{{template "perma-section" section "Compiling The Examples"}}
+	{{template "install-azul3d"}}
+{{template "section-end"}}
+
+{{template "bottom.tmpl"}}
+
