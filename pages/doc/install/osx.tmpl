@@ -23,12 +23,15 @@
 
 {{template "perma-section" section "Dependencies"}}
 	<p>Xcode must be installed from the <a href="https://itunes.apple.com/us/app/xcode/id497799835?mt=12">App Store</a>.</p>
-	<p>Brew can be used to install the remaining dependencies (which at this time is just FreeType):</p>
+	<p><a href="http://brew.sh/">Homebrew</a> is used to install the dependencies. To install homebrew run:</p>
+	{{template "list"}}
+		{{template "li-code"}}ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"{{template "li-code-end"}}
+	{{template "list-end"}}
+	<p>Then install the FreeType dependency:</p>
 	{{template "list"}}
 		{{template "li-code"}}brew install freetype{{template "li-code-end"}}
 	{{template "list-end"}}
 {{template "section-end"}}
-
 
 {{template "perma-section" section "Compiling The Examples"}}
 	{{template "install-azul3d"}}
