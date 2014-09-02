@@ -1,7 +1,7 @@
 {{template "top.tmpl"}}
 
 {{template "section" section "Linux Installation"}}
-	<p>What follows is a detailed step-by-step guide on installing Azul3D on a Linux 386/amd64 platform. For other platforms please see <a href="/doc/install">this page</a>.</p>
+	<p>What follows is a detailed step-by-step guide on installing Azul3D on a Linux 386/amd64 platform. For other platforms please see <a href="/doc/install">the installation page</a>.</p>
 
 	{{template "list"}}
 		{{template "li"}}<a href="#install-go">Install Go</a>{{template "li-end"}}
@@ -16,6 +16,7 @@
 
 {{template "perma-section" section "Install Go"}}
 	<p>Install the latest version of Go from <a href="http://golang.org/doc/install">here</a>.</p>
+	{{template "required-go-version"}}
 	<p>Set the environment variable GOPATH, for example:</p>
 	{{template "list"}}
 		{{template "li-code"}}/home/joe/godev{{template "li-code-end"}}
