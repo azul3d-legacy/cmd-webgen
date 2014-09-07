@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"code.google.com/p/goauth2/oauth"
 	"github.com/google/go-github/github"
 )
 
@@ -31,8 +32,22 @@ var (
 	}
 
 	API_TOKEN = os.Getenv("GITHUB_API_TOKEN")
-	ghClient  *github.Client
+	ghClients chan *github.Client
 )
+
+func ghInitClients(token string, n int) {
+	ghClients = make(chan *github.Client, n)
+	for i := 0; i < n; i++ {
+		if len(token) > 0 {
+			t := &oauth.Transport{
+				Token: &oauth.Token{AccessToken: API_TOKEN},
+			}
+			ghClients <- github.NewClient(t.Client())
+			continue
+		}
+		ghClients <- github.NewClient(nil)
+	}
+}
 
 func dashToSlash(dashes string) string {
 	return strings.Replace(dashes, "-", "/", -1)
@@ -50,7 +65,7 @@ func importURL(repoName, versionTag string) string {
 
 func fetchAllRepos(ghClient *github.Client) ([]github.Repository, error) {
 	opt := &github.RepositoryListByOrgOptions{
-		ListOptions: github.ListOptions{PerPage: 10},
+		ListOptions: github.ListOptions{PerPage: 100},
 	}
 	var allRepos []github.Repository
 	for {
@@ -68,7 +83,7 @@ func fetchAllRepos(ghClient *github.Client) ([]github.Repository, error) {
 }
 
 func fetchTags(ghClient *github.Client, repo string) ([]github.RepositoryTag, error) {
-	opt := &github.ListOptions{PerPage: 10}
+	opt := &github.ListOptions{PerPage: 100}
 	var allTags []github.RepositoryTag
 	for {
 		tags, resp, err := ghClient.Repositories.ListTags(ghOrganization, repo, opt)
@@ -89,21 +104,56 @@ type repo struct {
 	Tags []github.RepositoryTag
 }
 
-func fetchRepos(ghClient *github.Client) (map[string]repo, error) {
-	rs, err := fetchAllRepos(ghClient)
+func fetchRepos() (map[string]repo, error) {
+	client := <-ghClients
+	rs, err := fetchAllRepos(client)
+	ghClients <- client
 	if err != nil {
 		return nil, err
 	}
+
+	// Fetch tags using multiple goroutines.
+	var (
+		errors    = make(chan error, 16)
+		reposChan = make(chan repo, 16)
+		firstErr  error
+	)
+	for _, toCpy := range rs {
+		r := toCpy
+		go func() {
+			client := <-ghClients
+			tags, err := fetchTags(client, *r.Name)
+			ghClients <- client
+			if err != nil {
+				errors <- err
+				return
+			}
+			reposChan <- repo{
+				Repository: r,
+				Tags:       tags,
+			}
+		}()
+	}
+
+	// Wait for all goroutines to finish, either with a result or an error.
 	repos := make(map[string]repo, len(rs))
-	for _, r := range rs {
-		tags, err := fetchTags(ghClient, *r.Name)
-		if err != nil {
-			return nil, err
+	done := 0
+	for done < len(rs) {
+		select {
+		case r := <-reposChan:
+			repos[*r.Name] = r
+			done++
+		case err = <-errors:
+			done++
+			if firstErr == nil {
+				firstErr = err
+			}
 		}
-		repos[*r.Name] = repo{
-			Repository: r,
-			Tags:       tags,
-		}
+	}
+
+	// Return the first error that occured, if any.
+	if firstErr != nil {
+		return nil, firstErr
 	}
 	return repos, nil
 }

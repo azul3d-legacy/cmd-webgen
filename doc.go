@@ -287,7 +287,7 @@ func gogetu(path string) (err error, stdout, stderr *bytes.Buffer) {
 
 func generateDocs() error {
 	log.Println("Scanning github repositories...")
-	repos, err := fetchRepos(ghClient)
+	repos, err := fetchRepos()
 	if err != nil {
 		return err
 	}

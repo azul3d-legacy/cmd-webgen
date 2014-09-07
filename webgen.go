@@ -14,9 +14,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-
-	"code.google.com/p/goauth2/oauth"
-	"github.com/google/go-github/github"
 )
 
 // TODO:
@@ -113,18 +110,11 @@ func main() {
 	log.SetFlags(0)
 	flag.Parse()
 
-	if len(API_TOKEN) == 0 {
-		if *auth {
-			log.Println("$GITHUB_API_TOKEN not set to a GitHub API token!")
-			log.Fatal("Continue without authentication using -auth=false")
-		}
-		ghClient = github.NewClient(nil)
-	} else {
-		t := &oauth.Transport{
-			Token: &oauth.Token{AccessToken: API_TOKEN},
-		}
-		ghClient = github.NewClient(t.Client())
+	if len(API_TOKEN) == 0 && *auth {
+		log.Println("$GITHUB_API_TOKEN not set to a GitHub API token!")
+		log.Fatal("Continue without authentication using -auth=false")
 	}
+	ghInitClients(API_TOKEN, 16)
 
 	if len(GOPATH) == 0 {
 		log.Fatal("GOPATH is invalid.")
