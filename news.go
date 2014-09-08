@@ -5,13 +5,13 @@
 package main
 
 import (
-	"html/template"
-	"path/filepath"
-	"io/ioutil"
 	"bytes"
-	"strings"
+	"html/template"
+	"io/ioutil"
 	"log"
 	"os"
+	"path/filepath"
+	"strings"
 
 	bf "github.com/russross/blackfriday"
 )
@@ -114,9 +114,9 @@ func generateNews() error {
 		}
 
 		log.Println(" -", relPath)
-		return tmplRoot.ExecuteTemplate(out, newsTemplate, map[string]interface{} {
+		return tmplRoot.ExecuteTemplate(out, newsTemplate, map[string]interface{}{
 			"Title": title,
-			"HTML": template.HTML(MarkdownNews(markdown)),
+			"HTML":  template.HTML(MarkdownNews(markdown)),
 		})
 	})
 	return err

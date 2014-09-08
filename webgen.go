@@ -30,7 +30,7 @@ const (
 	pkgDocOutDir     = ""
 	pkgIndexTemplate = "pkgindex.tmpl"
 	pkgIndexOut      = "/packages.html"
-	newsTemplate = "article.tmpl"
+	newsTemplate     = "article.tmpl"
 	importDomain     = "azul3d.org"
 	githubOrg        = "azul3d"
 )
@@ -75,7 +75,15 @@ func main() {
 
 	if *cleanOutDir {
 		log.Println("rm -rf", cleanPath(*outDir))
-		err := os.RemoveAll(*outDir)
+		err := filepath.Walk(*outDir, func(path string, info os.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
+			if path != *outDir && !strings.Contains(path, ".git") {
+				return os.RemoveAll(path)
+			}
+			return nil
+		})
 		if err != nil {
 			log.Fatal(err)
 		}

@@ -84,4 +84,3 @@ func (p prefixWriter) Write(b []byte) (int, error) {
 	}
 	return p.out.Write(b)
 }
-
