@@ -7,7 +7,6 @@ package main
 import (
 	"flag"
 	"html/template"
-	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -22,6 +21,7 @@ import (
 
 const (
 	contentDirName   = "content"
+	newsDirName      = "news"
 	pagesDirName     = "pages"
 	templatesDirName = "templates"
 	rootDir          = "src/azul3d.org/cmd/webgen.dev"
@@ -30,65 +30,15 @@ const (
 	pkgDocOutDir     = ""
 	pkgIndexTemplate = "pkgindex.tmpl"
 	pkgIndexOut      = "/packages.html"
+	newsTemplate = "article.tmpl"
 	importDomain     = "azul3d.org"
 	githubOrg        = "azul3d"
 )
-
-func cp(from, to string) error {
-	return filepath.Walk(from, func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-
-		dst := filepath.Join(to, strings.TrimPrefix(path, absRootDir))
-		log.Printf("cp %s %s\n", cleanPath(path), cleanPath(dst))
-
-		err = os.MkdirAll(filepath.Dir(dst), os.ModeDir|os.ModePerm)
-		if err != nil {
-			return err
-		}
-
-		srcFile, err := os.Open(path)
-		if err != nil {
-			return err
-		}
-
-		// Not a file? Don't do anything.
-		fi, err := srcFile.Stat()
-		if err != nil {
-			return err
-		}
-		if !fi.Mode().IsRegular() {
-			return nil
-		}
-
-		dstFile, err := os.Create(dst)
-		if err != nil {
-			return err
-		}
-
-		_, err = io.Copy(dstFile, srcFile)
-		return err
-	})
-}
 
 func cleanPath(s string) string {
 	s = strings.Replace(s, absRootDir, "$WORK", 1)
 	s = strings.Replace(s, *outDir, "$OUT", 1)
 	return s
-}
-
-type prefixWriter struct {
-	out    io.Writer
-	prefix []byte
-}
-
-func (p prefixWriter) Write(b []byte) (int, error) {
-	_, err := p.out.Write(p.prefix)
-	if err != nil {
-		return 0, err
-	}
-	return p.out.Write(b)
 }
 
 var (
@@ -125,15 +75,7 @@ func main() {
 
 	if *cleanOutDir {
 		log.Println("rm -rf", cleanPath(*outDir))
-		err := filepath.Walk(*outDir, func(path string, info os.FileInfo, err error) error {
-			if err != nil {
-				return err
-			}
-			if path != *outDir && !strings.Contains(path, ".git") {
-				return os.RemoveAll(path)
-			}
-			return nil
-		})
+		err := os.RemoveAll(*outDir)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -189,9 +131,9 @@ func main() {
 		dirNoPages := strings.TrimPrefix(dir, pagesDirName)
 		htmlOut := filepath.Join(*outDir, dirNoPages, name+".html")
 		htmlOutDir := filepath.Dir(htmlOut)
-		log.Println("mkdir", cleanPath(htmlOutDir))
 		err = os.MkdirAll(htmlOutDir, os.ModeDir|os.ModePerm)
 		if err != nil {
+			log.Println("mkdir", cleanPath(htmlOutDir))
 			return err
 		}
 
@@ -228,6 +170,12 @@ func main() {
 	}
 
 	err = generateDocs()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Generate the news.
+	err = generateNews()
 	if err != nil {
 		log.Fatal(err)
 	}

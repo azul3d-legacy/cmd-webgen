@@ -286,6 +286,12 @@ func gogetu(path string) (err error, stdout, stderr *bytes.Buffer) {
 }
 
 func generateDocs() error {
+	if *docsFlag == false && *updateFlag == false {
+		log.Println("Skipping updates of local repositories (-update=false).")
+		log.Println("Skipping generation of package documentation (-docs=false).")
+		return nil
+	}
+
 	log.Println("Scanning github repositories...")
 	repos, err := fetchRepos()
 	if err != nil {
