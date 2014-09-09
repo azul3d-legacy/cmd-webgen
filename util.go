@@ -25,8 +25,24 @@ func rmIgnoreGit(target string) error {
 		if err != nil {
 			return err
 		}
-		if path != target && !strings.Contains(path, ".git") {
-			return os.RemoveAll(path)
+
+		// Don't remove the folder itself.
+		if path == target {
+			return nil
+		}
+
+		// Check each component of the filepath to determine if the final path
+		// is part of a .git directory.
+		for _, c := range filepath.SplitList(path) {
+			if c == ".git" {
+				return nil
+			}
+		}
+
+		// Remove the path.
+		err = os.RemoveAll(path)
+		if err != nil && !os.IsNotExist(err) {
+			return err
 		}
 		return nil
 	})
