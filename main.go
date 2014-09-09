@@ -98,7 +98,7 @@ func main() {
 
 	// Initialize the root template.
 	//
-	// TODO(slimsag): remove makeSection when no longer needed due to markdown.
+	// TODO(slimsag): remove makeSection when no longer needed due to Markdown.
 	tmplRoot, err = template.New("root").Funcs(map[string]interface{}{
 		"section":      makeSection,
 		"filepathJoin": filepath.Join,
@@ -108,6 +108,8 @@ func main() {
 	}
 
 	// Execute each page template as needed.
+	//
+	// TODO(slimsag): Remove this entirely after moving to Markdown.
 	pagesDir := filepath.Join(absRootDir, pagesDirName)
 	err = filepath.Walk(pagesDir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
@@ -192,6 +194,7 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// Automatically push the changes to the git repository, if desired.
 	if *pushAfter {
 		log.Println("Pushing changes to remote...")
 		log.Println("    Repo Root:", *outDir)
