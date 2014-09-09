@@ -180,6 +180,7 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// Generate package documentation.
 	err = generateDocs()
 	if err != nil {
 		log.Fatal(err)
@@ -208,12 +209,10 @@ func main() {
 		}
 	}
 
+	// Start the local HTTP server, if desired.
 	if len(*httpAddr) > 0 {
 		log.Println("Listening on HTTP", *httpAddr)
 		http.Handle("/", http.FileServer(http.Dir(*outDir)))
-		//http.Handle("/tmpfiles/", http.StripPrefix("/tmpfiles/", http.FileServer(http.Dir("/tmp"))))
-		//fs := http.FileServer(http.Dir(*outDir))
-		//http.Handle("/", http.StripPrefix(*outDir, fs))
 		err := http.ListenAndServe(*httpAddr, nil)
 		if err != nil {
 			log.Fatal(err)
