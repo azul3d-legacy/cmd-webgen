@@ -15,9 +15,8 @@ import (
 	"strings"
 )
 
-// TODO:
-//  - Types in package documentation should link to eachother.
-//  - Source files in package documentation should link to GitHub view.
+// TODO(slimsag): Types in package documentation should link to eachother.
+// TODO(slimasg): Functions and methods should link to their source on GitHub.
 
 const (
 	contentDirName   = "content"
