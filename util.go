@@ -18,6 +18,20 @@ func replaceExt(path, newExt string) string {
 	return path[:len(path)-len(oldExt)] + newExt
 }
 
+// rmIgnoreGit removes the folder given by the path. The folder itself remains
+// as do any .git file paths.
+func rmIgnoreGit(target string) error {
+	return filepath.Walk(target, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if path != target && !strings.Contains(path, ".git") {
+			return os.RemoveAll(path)
+		}
+		return nil
+	})
+}
+
 // cp copies all files from the source directory to the destination directory.
 // It logs each folder that it copies (but not individual files).
 func cp(from, to string) error {

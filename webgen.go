@@ -57,33 +57,34 @@ var (
 )
 
 func main() {
+	// Configure logging and parse command line flags.
 	log.SetFlags(0)
 	flag.Parse()
 
-	if len(API_TOKEN) == 0 && *auth {
-		log.Println("$GITHUB_API_TOKEN not set to a GitHub API token!")
-		log.Fatal("Continue without authentication using -auth=false")
-	}
-	ghInitClients(API_TOKEN, 16)
-
+	// Check for invalid GOPATH's.
 	if len(GOPATH) == 0 {
 		log.Fatal("GOPATH is invalid.")
 	}
 
+	// If there is no GitHub API token but they want authentication -- it's a
+	// fatal error.
+	if len(API_TOKEN) == 0 && *auth {
+		log.Println("$GITHUB_API_TOKEN not set to a GitHub API token!")
+		log.Fatal("Continue without authentication using -auth=false")
+	}
+
+	// Initialize a pool of 16 GitHub clients.
+	ghInitClients(API_TOKEN, 16)
+
+	// Log the working and output directory paths.
 	log.Println("WORK =", strings.Replace(absRootDir, GOPATH, "$GOPATH", -1))
 	log.Println("OUT =", strings.Replace(*outDir, GOPATH, "$GOPATH", -1))
 
+	// If desired, we clean the output directory of all existing contents
+	// except .git file paths.
 	if *cleanOutDir {
 		log.Println("rm -rf", cleanPath(*outDir))
-		err := filepath.Walk(*outDir, func(path string, info os.FileInfo, err error) error {
-			if err != nil {
-				return err
-			}
-			if path != *outDir && !strings.Contains(path, ".git") {
-				return os.RemoveAll(path)
-			}
-			return nil
-		})
+		err := rmIgnoreGit(*outDir)
 		if err != nil {
 			log.Fatal(err)
 		}
