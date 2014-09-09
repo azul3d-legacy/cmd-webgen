@@ -89,13 +89,16 @@ func main() {
 		}
 	}
 
-	// Copy content folder.
+	// Copy the content folder to the output directory.
 	content := filepath.Join(absRootDir, contentDirName)
 	err := cp(content, *outDir)
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	// Initialize the root template.
+	//
+	// TODO(slimsag): remove makeSection when no longer needed due to markdown.
 	tmplRoot, err = template.New("root").Funcs(map[string]interface{}{
 		"section":      makeSection,
 		"filepathJoin": filepath.Join,
