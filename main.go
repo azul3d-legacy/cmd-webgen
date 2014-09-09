@@ -20,7 +20,6 @@ import (
 
 const (
 	contentDirName   = "content"
-	newsDirName      = "news"
 	pagesDirName     = "pages"
 	templatesDirName = "templates"
 	rootDir          = "src/azul3d.org/cmd/webgen.dev"
@@ -29,9 +28,16 @@ const (
 	pkgDocOutDir     = ""
 	pkgIndexTemplate = "pkgindex.tmpl"
 	pkgIndexOut      = "/packages.html"
-	newsTemplate     = "article.tmpl"
 	importDomain     = "azul3d.org"
 	githubOrg        = "azul3d"
+
+	// Default title to use for rendered Markdown pages when one is not found
+	// properly in the file.
+	mdDefaultTitle = "Azul3D"
+
+	// Title to append to rendered Markdown pages when one is properly found in
+	// the file.
+	mdAppendTitle = " - Azul3D"
 )
 
 func cleanPath(s string) string {
@@ -189,7 +195,8 @@ func main() {
 	}
 
 	// Generate the news.
-	err = generateNews()
+	log.Println("Generating news articles...")
+	err = mdGenerate("news", "article.tmpl", false)
 	if err != nil {
 		log.Fatal(err)
 	}

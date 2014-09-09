@@ -16,14 +16,16 @@ import (
 	bf "github.com/russross/blackfriday"
 )
 
-func MarkdownNews(input []byte) []byte {
+func mdRender(input []byte, sanitized bool) []byte {
 	// set up the HTML renderer
 	htmlFlags := 0
 	htmlFlags |= bf.HTML_USE_XHTML
 	htmlFlags |= bf.HTML_USE_SMARTYPANTS
 	htmlFlags |= bf.HTML_SMARTYPANTS_FRACTIONS
 	htmlFlags |= bf.HTML_SMARTYPANTS_LATEX_DASHES
-	//htmlFlags |= HTML_SANITIZE_OUTPUT
+	if sanitized {
+		htmlFlags |= bf.HTML_SANITIZE_OUTPUT
+	}
 	renderer := bf.HtmlRenderer(htmlFlags, "", "")
 
 	// set up the parser
@@ -39,12 +41,12 @@ func MarkdownNews(input []byte) []byte {
 	return bf.Markdown(input, renderer, extensions)
 }
 
-// findNewsTitle finds the news title in the markdown input. It is expected to
-// exist on the first line:
+// mdFindTitle finds the title in the markdown input. It is expected to exist on
+// the first line:
 //  # Some Title Here
 // The function then returns a string:
 //  "Some Title Here"
-func findNewsTitle(buf []byte) string {
+func mdFindTitle(buf []byte) string {
 	lineEnd := bytes.IndexAny(buf, "\n")
 	if lineEnd == -1 {
 		return ""
@@ -55,24 +57,30 @@ func findNewsTitle(buf []byte) string {
 	return strings.TrimSpace(l)
 }
 
-func generateNews() error {
-	log.Println("Generating news articles...")
-
+// mdGenerate generates all of the Markdown files in the given folder path,
+// rendering each one using the named template.
+func mdGenerate(folder, tmpl string, sanitized bool) error {
+	absPagesDir := filepath.Join(absRootDir, pagesDirName)
+	dir := filepath.Join(absPagesDir, folder)
 	// Generate each markdown page as needed.
-	newsDir := filepath.Join(absRootDir, newsDirName)
-	err := filepath.Walk(newsDir, func(path string, info os.FileInfo, err error) error {
+	return filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
 
-		// Open markdown file (or folder).
+		// If not a Markdown file, don't do anything.
+		if filepath.Ext(path) != ".md" {
+			return nil
+		}
+
+		// Open the file.
 		f, err := os.Open(path)
 		if err != nil {
 			return err
 		}
 		defer f.Close()
 
-		// If not a file, don't do anything.
+		// If not a regular file, don't do anything.
 		fi, err := f.Stat()
 		if err != nil {
 			return err
@@ -81,13 +89,13 @@ func generateNews() error {
 			return nil
 		}
 
-		// Get a relative path.
-		relPath, err := filepath.Rel(absRootDir, path)
+		// Determine a path relative to the root directory.
+		relPath, err := filepath.Rel(absPagesDir, path)
 		if err != nil {
 			return err
 		}
 
-		// Create output file in e.g. out/news/2014/example.html
+		// Create output file in e.g. $OUT/news/2014/example.html
 		htmlFile := replaceExt(filepath.Base(relPath), ".html")
 		outPath := filepath.Join(*outDir, filepath.Dir(relPath), htmlFile)
 		err = os.MkdirAll(filepath.Dir(outPath), os.ModeDir|os.ModePerm)
@@ -99,25 +107,25 @@ func generateNews() error {
 			return err
 		}
 
-		// Read the markdown file.
+		// Read the Markdown file.
 		markdown, err := ioutil.ReadAll(f)
 		if err != nil {
 			return err
 		}
 
 		// Find an appropriate title.
-		title := findNewsTitle(markdown)
+		title := mdFindTitle(markdown)
 		if title == "" {
-			title = "Azul3D"
+			title = mdDefaultTitle
 		} else {
-			title += " - Azul3D"
+			title += mdAppendTitle
 		}
 
+		// Execute the template.
 		log.Println(" -", relPath)
-		return tmplRoot.ExecuteTemplate(out, newsTemplate, map[string]interface{}{
+		return tmplRoot.ExecuteTemplate(out, tmpl, map[string]interface{}{
 			"Title": title,
-			"HTML":  template.HTML(MarkdownNews(markdown)),
+			"HTML":  template.HTML(mdRender(markdown, sanitized)),
 		})
 	})
-	return err
 }
