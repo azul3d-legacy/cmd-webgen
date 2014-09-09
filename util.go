@@ -21,7 +21,10 @@ func replaceExt(path, newExt string) string {
 // rmIgnoreGit removes the folder given by the path. The folder itself remains
 // as do any .git file paths.
 func rmIgnoreGit(target string) error {
-	return filepath.Walk(target, func(path string, info os.FileInfo, err error) error {
+	var rmPaths []string
+
+	// Walk the structure and find paths to remove.
+	err := filepath.Walk(target, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
@@ -39,13 +42,23 @@ func rmIgnoreGit(target string) error {
 			}
 		}
 
+		// Append to slice.
+		rmPaths = append(rmPaths, path)
+		return nil
+	})
+	if err != nil {
+		return err
+	}
+
+	// Remove the paths.
+	for _, path := range rmPaths {
 		// Remove the path.
 		err = os.RemoveAll(path)
 		if err != nil && !os.IsNotExist(err) {
 			return err
 		}
-		return nil
-	})
+	}
+	return nil
 }
 
 // cp copies all files from the source directory to the destination directory.
