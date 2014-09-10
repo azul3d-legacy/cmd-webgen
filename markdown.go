@@ -59,17 +59,38 @@ func mdFindTitle(buf []byte) string {
 
 // mdGenerate generates all of the Markdown files in the given folder path,
 // rendering each one using the named template.
-func mdGenerate(folder, tmpl string, sanitized bool) error {
+func mdGenerate(matchPatterns []string, tmpl string, sanitized bool) error {
 	absPagesDir := filepath.Join(absRootDir, pagesDirName)
-	dir := filepath.Join(absPagesDir, folder)
 	// Generate each markdown page as needed.
-	return filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
+	return filepath.Walk(absPagesDir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
 
 		// If not a Markdown file, don't do anything.
 		if filepath.Ext(path) != ".md" {
+			return nil
+		}
+
+		// Determine a path relative to the root directory.
+		relPath, err := filepath.Rel(absPagesDir, path)
+		if err != nil {
+			return err
+		}
+
+		// Determine if we have a matching file path.
+		matched := false
+		for _, matchPattern := range matchPatterns {
+			match, err := filepath.Match(matchPattern, relPath)
+			if err != nil {
+				log.Fatal(err)
+			}
+			if match {
+				matched = true
+				break
+			}
+		}
+		if !matched {
 			return nil
 		}
 
@@ -87,12 +108,6 @@ func mdGenerate(folder, tmpl string, sanitized bool) error {
 		}
 		if !fi.Mode().IsRegular() {
 			return nil
-		}
-
-		// Determine a path relative to the root directory.
-		relPath, err := filepath.Rel(absPagesDir, path)
-		if err != nil {
-			return err
 		}
 
 		// Create output file in e.g. $OUT/news/2014/example.html

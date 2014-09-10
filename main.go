@@ -122,6 +122,11 @@ func main() {
 			return err
 		}
 
+		// Only touch .tmpl files.
+		if filepath.Ext(path) != ".tmpl" {
+			return nil
+		}
+
 		// Open template file (or folder).
 		f, err := os.Open(path)
 		if err != nil {
@@ -194,9 +199,21 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// Generate the news.
-	log.Println("Generating news articles...")
-	err = mdGenerate("news", "article.tmpl", false)
+	// Generate all articles.
+	err = mdGenerate([]string{
+		"*.md",
+		"news/*.md",
+		"news/*/*.md",
+	}, "article.tmpl", false)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Generate all documentation.
+	err = mdGenerate([]string{
+		"doc/*.md",
+		"doc/*/*.md",
+	}, "doc.tmpl", false)
 	if err != nil {
 		log.Fatal(err)
 	}
