@@ -19,7 +19,7 @@ func replaceExt(path, newExt string) string {
 }
 
 // rmIgnoreGit removes the folder given by the path. The folder itself remains
-// as do any .git file paths.
+// as does the .git folder.
 func rmIgnoreGit(target string) error {
 	var rmPaths []string
 
@@ -36,7 +36,7 @@ func rmIgnoreGit(target string) error {
 
 		// Check each component of the filepath to determine if the final path
 		// is part of a .git directory.
-		for _, c := range filepath.SplitList(path) {
+		for _, c := range strings.Split(path, string(os.PathSeparator)) {
 			if c == ".git" {
 				return nil
 			}
