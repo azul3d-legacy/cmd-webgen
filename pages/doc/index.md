@@ -3,6 +3,7 @@
 * [Installation](/doc/install)
 * [Frequently Asked Questions](/doc/faq.html)
 * [Supported Platforms](/doc/platform-support.html)
+* [More Packages](/more-packages.html)
 * [The Roadmap](/doc/roadmap.html)
 * [Updating Packages](/doc/updating.html)
 * [How Versioning Works](/doc/versioning.html)

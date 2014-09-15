@@ -2,6 +2,7 @@
 
 {{template "section" section "Packages"}}
 	<p>Below is a list of all packages provided by Azul3D. Clicking a version number for a package will bring you to detailed documentation about that version of the package and also show you it's direct import path.</p>
+	<p><a href="/more-packages.html">More (unofficial) packages</a> are also available.</p>
 	{{template "list"}}
 		{{range $index, $p := .Packages}}
 			{{template "li"}}<a href="#{{call $.ID $p.RelPkgPath}}">{{$p.RelPkgPath}}</a>{{template "li-end"}}
