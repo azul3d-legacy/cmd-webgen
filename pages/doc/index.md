@@ -6,6 +6,8 @@
 * [The Roadmap](/doc/roadmap.html)
 * [Updating Packages](/doc/updating.html)
 * [How Versioning Works](/doc/versioning.html)
+* [Authors](/doc/authors.html)
+* [License](/doc/license.html)
 
 # Packages
 

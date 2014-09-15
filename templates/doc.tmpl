@@ -68,6 +68,18 @@ $(function() {
 		$(this).wrap('<span></span>');
 		bio.prependTo($(this).parent());
 	});
+
+
+	// Decode all ROT13 encoded email addresses. Online encoder at:
+	//  http://www.rot13.com/index.php
+	$('a[href^="mailto:"]').each(function(i, obj) {
+		var s = $(this).attr("href");
+		console.log(s);
+		s = s.slice(("mailto:ROT13").length, s.length);
+		s = s.replace(/[a-zA-Z]/g,function(c){return String.fromCharCode((c<="Z"?90:122)>=(c=c.charCodeAt(0)+13)?c:c-26);});
+		$(this).attr("href", "mailto:" + s);
+		$(this).html(s);
+	});
 });
 </script>
 {{template "bottom.tmpl"}}
