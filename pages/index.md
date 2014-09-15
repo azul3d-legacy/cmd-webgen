@@ -13,6 +13,6 @@
 
 # News
 
+* [Improving The Site And Licensing](/news/2014/improving-the-site-and-licensing.html)
 * [gfx/window: version 2](/news/2014/gfx-window-version-2.html)
-* [Mac OS X Support!](/news/2014/mac-osx-support.html)
 * [>>> more news](/news/)
