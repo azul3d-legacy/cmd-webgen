@@ -1,7 +1,7 @@
 # Mac OS X Support!
 <p class="date">September 2, 2014</p>
 
-When we officially announced Azul3D just one month ago; The two [supported platforms](/doc/platform-support.html) where Windows and Linux, so the biggest question everyone had was *"Will Azul3D support OS X?"*.
+When we officially announced Azul3D just one month ago; The two [supported platforms](/doc/platform-support.html) were Windows and Linux, so the biggest question everyone had was *"Will Azul3D support OS X?"*.
 
 Today, we are proud to inform you that **_Mac OS X is officially supported by Azul3D!_**
 
