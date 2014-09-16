@@ -11,7 +11,7 @@ We have found that Markdown is more suitable for writing content like news artic
 
 To render the Markdown we are using *Russ Ross*'s Markdown parser, [Blackfriday](https://github.com/russross/blackfriday), which we have found to be very fast both in sheer speed and with it's incredibly clear API. We're really happy with it!
 
-You can see how much more clear and concise this method is by comparing an old Go [HTML template](https://raw.githubusercontent.com/azul3d/cmd-webgen/9a76decd02028b4d7c2ca3b8734eb7c031a3b6b7/pages/news/2014/mac-osx-support.tmpl) with it's new [Markdown version](https://raw.githubusercontent.com/azul3d/cmd-webgen/9a76decd02028b4d7c2ca3b8734eb7c031a3b6b7/pages/news/2014/mac-osx-support.tmpl).
+You can see how much more clear and concise this method is by comparing an old Go [HTML template](https://raw.githubusercontent.com/azul3d/cmd-webgen/9a76decd02028b4d7c2ca3b8734eb7c031a3b6b7/pages/news/2014/mac-osx-support.tmpl) with it's new [Markdown version](https://raw.githubusercontent.com/azul3d/cmd-webgen/master/pages/news/2014/mac-osx-support.md).
 
 Additionally, there were several pages that did not have any dedicated navigation links to them, except through the [FAQ](/doc/faq.html). This started to become a problem because the [FAQ](/doc/faq.html) *started to look like our navigation area* (how strange!).
 
