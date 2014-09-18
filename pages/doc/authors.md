@@ -8,3 +8,4 @@ This is the official list of all *The Azul3D Authors* for copyright purposes. Au
 | 2014 | Henry Eklind      | <ROT13urael@inreg.fr>              |
 | 2014 | Robin Eklind      | <ROT13e.rxyvaq.87@tznvy.pbz>       |
 | 2014 | Ian Remmler       | <ROT13vna@erzzyre.bet>             |
+| 2014 | Caleb Spare       | <ROT13prfcner@tznvy.pbz>           |
