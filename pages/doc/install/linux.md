@@ -37,7 +37,7 @@ If your distribution is not listed here please help us by [creating an issue](ht
 Using apt-get on Ubuntu 14.04 you can install all of the dependencies by running:
 
 ```
-sudo apt-get install build-essential git mesa-common-dev libx11-dev libx11-xcb-dev libxcb-icccm4-dev libxcb-image0-dev libxcb-randr0-dev libxcb-render-util0-dev libxcb-xkb-dev libfreetype6-dev libbz2-dev
+sudo apt-get install build-essential git mesa-common-dev libx11-dev libx11-xcb-dev libxcb-icccm4-dev libxcb-image0-dev libxcb-randr0-dev libxcb-render-util0-dev libxcb-xkb-dev libfreetype6-dev libbz2-dev libxxf86vm-dev libgl1-mesa-dev
 ```
 
 # Ubuntu 13.10
@@ -68,4 +68,3 @@ pacman -Sy base-devel git mesa libx11 libxcb xcb-util-wm xcb-util-image libxrand
 At this point, *you've successfully installed the dependencies*!
 
 Follow the rest of the instructions on the [installation page](/doc/install).
-
