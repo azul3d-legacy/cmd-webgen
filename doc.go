@@ -108,93 +108,6 @@ func openPkgDoc(path, importPath string) (*doc.Package, *token.FileSet, error) {
 	return pkg, fset, nil
 }
 
-func genPkgDoc(relPkgPath, thisVersionTag string, versions []string) (error, string) {
-	path := filepath.Join(baseImport, relPkgPath+"."+thisVersionTag)
-
-	// Source directory is not relative, but is under $GOPATH/src.
-	absPath := filepath.Join(GOPATH, "src", path)
-
-	// Open the package documentation.
-	pkg, fset, err := openPkgDoc(absPath, path)
-	if err != nil {
-		return err, ""
-	}
-
-	// Store pkg.Doc before filtering (filter empties the string).
-	pkgDoc := pkg.Doc
-
-	// Map used to serve templates with data.
-	tmplData := make(map[string]interface{}, 32)
-
-	// Filter out any test, benchmark, or example code.
-	pkg.Filter(func(name string) bool {
-		hasAnyPrefix := func(prefixes ...string) bool {
-			for _, p := range prefixes {
-				if strings.HasPrefix(name, p) {
-					return true
-				}
-			}
-			return false
-		}
-		return !hasAnyPrefix("Test", "Benchmark", "Example")
-	})
-
-	// Store some generic package information.
-	tmplData["Pkg"] = pkg
-	major, minor := pkgVersion(path)
-	tmplData["BaseImport"] = baseImport
-	tmplData["RelPkgPath"] = relPkgPath
-	tmplData["VersionTag"] = thisVersionTag
-	tmplData["Major"] = major
-	tmplData["Minor"] = minor
-	//tmplData["Synopsis"] = doc.Synopsis(pkgDoc)
-	tmplData["Versions"] = versions
-
-	// Collect index entries.
-	tmplData["IndexFuncs"] = collectIndexFuncs(pkg, fset)
-	tmplData["IndexTypes"] = collectIndexTypes(pkg, fset)
-
-	// Collect constants and variables.
-	vars, consts := collectValues(pkg, fset)
-	tmplData["Vars"] = vars
-	tmplData["Consts"] = consts
-
-	// Generate HTML package comments.
-	tmplData["HTMLDoc"] = htmlDoc(pkgDoc)
-
-	// Collect source files.
-	absPackageRoot := filepath.Join(GOPATH, "src", path)
-	dashedPkgPath := strings.Replace(relPkgPath, "/", "-", -1)
-	sourceURL := filepath.Join("https://github.com", githubOrg, dashedPkgPath, "blob", thisVersionTag)
-	generic, tagged, err := collectSources(absPackageRoot, sourceURL, pkg)
-	if err != nil {
-		return err, ""
-	}
-	tmplData["GenericSources"] = generic
-	tmplData["TaggedSources"] = tagged
-
-	// path is something like azul3d.org/pkgname.v1, we just want the
-	// pkgname.v1 part.
-	postDomainPath, err := filepath.Rel(importDomain, path)
-	if err != nil {
-		return err, ""
-	}
-
-	// Create output file in e.g. out/pkgname.v1
-	outPath := filepath.Join(*outDir, pkgDocOutDir, postDomainPath)
-	err = os.MkdirAll(filepath.Dir(outPath), os.ModeDir|os.ModePerm)
-	if err != nil {
-		return err, ""
-	}
-	out, err := os.Create(outPath)
-	if err != nil {
-		return err, ""
-	}
-
-	// Finally, execute the template with the data.
-	return tmplRoot.ExecuteTemplate(out, pkgDocTemplate, tmplData), outPath
-}
-
 func genPkgIndex(importables sortedImportables) (error, string) {
 	// Make copy of slice before deleting elements below.
 	cpy := make(sortedImportables, len(importables))
@@ -369,19 +282,6 @@ func generateDocs() error {
 		} else {
 			log.Println("        ->", outPath)
 		}
-
-		for _, imp := range importables {
-			for _, versionTag := range imp.VersionTags {
-				log.Printf("    genPkgDoc - %s\n", filepath.Join(baseImport, imp.RelPkgPath+"."+versionTag))
-				err, outPath := genPkgDoc(imp.RelPkgPath, versionTag, imp.VersionTags)
-				if err != nil {
-					log.Println("        -> ERROR", err)
-				} else {
-					log.Println("        ->", outPath)
-				}
-			}
-		}
-		log.Println("    done.")
 	}
 
 	return nil
