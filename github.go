@@ -22,6 +22,7 @@ var (
 		"issues":           true,
 		"examples":         true,
 		"cmd-webgen":       true,
+		"cmd-azulfix":      true,
 
 		// Deprecated packages.
 		"thirdparty-resize": true,
