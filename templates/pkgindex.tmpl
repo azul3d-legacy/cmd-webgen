@@ -2,7 +2,7 @@
 
 {{template "section" section "Packages"}}
 	<p>Below is a list of all Go packages provided by Azul3D.<p>
-	<p>More <a href="/more-packages.html">unofficial packages</a> are also available for use with Azul3D.</p>
+	<p>More <a href="/more-packages.html">unofficial packages</a> are also available.</p>
 	{{template "list"}}
 		{{range $index, $p := .Packages}}
 			{{template "li"}}<a href="#{{call $.ID $p.RelPkgPath}}">{{$p.RelPkgPath}}</a>{{template "li-end"}}
