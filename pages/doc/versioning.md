@@ -1,87 +1,113 @@
 # Versioning
 
-Azul3D packages are versioned such that when API compatible changes are made, programs using the previous package API are not broken. This document describes the versioning scheme used by Azul3D for all package imports.
+Azul3D packages are [semantically versioned](http://semver.org). The implementation allows you to import a specific version of a package, so that future API-incompatible changes do not break your programs.
 
 * [The Basics](#the-basics)
-* [Development Versions](#development-versions)
-* [Implementation - Git Tags](#implementation-git-tags)
-* [Implementation - Google App Engine](#implementation-google-app-engine)
+* [Major Versions Restriction](#major-versions-restriction)
+* [Version Zero](#version-zero)
+* [Pre-Release Versions](#pre-release-versions)
+* [Implementation](#implementation)
 
 # The Basics
 
-In the most basic form a package import path has the following syntax:</p>
+To import a Go package from GitHub you would write something like this: 
 
 ```
-azul3d.org/somepkg.v(major)[.(minor)]
+import "github.com/user/example"
 ```
 
-For instance the import path for *somepkg* whose major version is one would be:
+If you ran `go get github.com/user/example` it would download the most recent version of that package. This is problematic because if future API-incompatible changes are made to that package, your program will no longer build.
+
+Instead of importing packages in the above way, the `azul3d.org` website hosts a special type of proxy application which internally does a bit of magic -- ultimitely it forwards your requests to one of [our GitHub](https://github.com/azul3d) repositories.
+
+For instance to import the `gfx` package you can simply write:
 
 ```
-azul3d.org/somepkg.v1
+import "azul3d.org/gfx.v1"
 ```
 
-Or the import path for *somepkg* whose major version is one and minor version is two:
+If you run `go get azul3d.org/gfx.v1` the proxy application running at `azul3d.org` will do some magic such that you will always get an API-compatable version of that package.
+
+
+Even though the import path ends with the version number `.v1`, *the package is still referenced in code the same exact way*:
 
 ```
-azul3d.org/somepkg.v1.2
+gfx.Something()
 ```
 
-Even though the import path ends with a version number, the package is still referenced in code the same exact way:
+This is because Go analyzes the `package gfx` statement from the Go source files -- and doesn't care about the file path.
+
+# Major Versions Restriction
+
+If a program imports two seperate versions of the same package -- bad things can happen.
+
+Generally speaking this is *not allowed* -- but it's ultimately your responsibility to ensure it doesn't happen. To remedy this issue slightly, **only major versions are allowed in the package path**:
 
 ```
-somepkg.DoSomething()
+// allowed
+import "azul3d.org/gfx.v1"
+
+// not allowed
+import "azul3d.org/gfx.v1.2"
+import "azul3d.org/gfx.v1.2.3"
 ```
 
-This is because Go analyzes the package name from the source code files -- not the import URL.
+This ensures that all applications using the `v1` API version are importing the same package.
 
-# Development Versions
-
-There is a special path extension, *.dev*, which signifies the in-development version of the package, like so:
+Note that the major version in an import *always points to the latest minor and patch version*, for instance if four versions exist:
 
 ```
-azul3d.org/somepkg.dev
+azul3d.org/gfx.v1
+  -> v2.0.0 (not chosen, major version is not the same)
+  -> v1.2.1 (chosen, it's the latest version)
+  -> v1.2.0
+  -> v1.0.0
 ```
 
-This special extension should only be used if you need features only found in the in-development versions of packages, but most of the time you should never use it and instead stick with the most-recently released version (mentioned on the documentation page for that package).
+# Version Zero
 
-# Implementation - Git Tags
+In accordance with section 2. of the [semantic versioning](http://semver.org) specification, which reads:
 
-In our implementation of versioning, we use git tags like "v1" or "v1.2" to reference a specifically released version. This is important for a few reasons:
+> Major version zero (0.y.z) is for initial development. Anything may change at any time. The public API should not be considered stable.
 
-* Tags can be moved to newer revisions, so that fixes can still be made to versions post-release (as long as no backwards-incompatible changes have been made yet).
-* Tags are easy to view through the GitHub API which makes writing versioned-documentation easy.
-* Version tags can be viewed through the GitHub's website (which even allows downloading zipped archives of version releases).
-
-# Implementation - Google App Engine
-
-The Go tool is not aware of tags as version numbers, this means that we must theoretically host a different repository for each version of each package. But in reality we can actually work around this by using some trickery:
-
-Using remote import path HTML meta tags (see [here](http://golang.org/cmd/go/#hdr-Remote_import_paths)) the Go tool will let us alias an GitHub repository under a different domain name, such that the import path:
+A major version zero is for very initial development: *A package whose major version is zero should not be considered stable*.
 
 ```
-github.com/azul3d/somepkg
+// unstable
+import "azul3d.org/pkg.v0"
+
+// stable
+import "azul3d.org/pkg.v1"
 ```
 
-Becomes:
+# Pre-Release Versions
+
+In accordance with section 9. of the [semantic versioning](http://semver.org) specification, which reads:
+
+> A pre-release version MAY be denoted by appending a hyphen and a series of dot separated identifiers immediately following the patch version. Identifiers MUST comprise only ASCII alphanumerics and hyphen [0-9A-Za-z-]. Identifiers MUST NOT be empty. Numeric identifiers MUST NOT include leading zeroes. Pre-release versions have a lower precedence than the associated normal version. A pre-release version indicates that the version is unstable and might not satisfy the intended compatibility requirements as denoted by its associated normal version. Examples: 1.0.0-alpha, 1.0.0-alpha.1, 1.0.0-0.3.7, 1.0.0-x.7.z.92.
+
+A *single pre-release version* is supported by prefixing `-dev` onto the existing version number, like so:
 
 ```
-azul3d.org/somepkg
+// in-development
+import "azul3d.org/pkg.v2-dev"
+
+// not released yet
+import "azul3d.org/pkg.v2"
+
+// released already
+import "azul3d.org/pkg.v1"
 ```
 
-Then we make use of an appengine application responsible for acting as a proxy of sorts (view the source of this application [here](https://github.com/azul3d/appengine)). For standard web requests, it simply makes a proxied request to our `azul3d.github.io` domain, where the entire website content generated via the [webgen tool](https://github.com/azul3d/cmd-webgen) is hosted. In practice this is not slow because the website is fronted by [CloudFlare](https://www.cloudflare.com/) which caches these requests.
+This special extension should only be used if you need features only found in the in-development versions of packages, but most of the time you should never use it and instead stick with the most-recently released version.
 
-When the appengine application receives a request from the go-get tool (signified by a URL query term `?go-get=1`), it first makes contact to GitHub to see if the repository exists, if it does then it serves a meta tag to go-get like:
+# Implementation
 
-```
-<meta name="go-import" content="azul3d.org/somepkg.v1 git azul3d.org/somepkg.v1/repo">
-```
+In the implementation we make use of Git tags and branches named after the version (e.g. `v1` or `v1.2.1`).
 
-Then go get wil run the git clone command like:
+If both a branch and tag of the same name and version exist (e.g. tag `v1` and branch `v1` both exist), then the first choice *is always the branch*, and the second is the tag. Otherwise the latest version is always used (i.e. tag `v1.1` will be chosen over branch `v1`).
 
-```
-git clone azul3d.org/somepkg.v1/repo $GOPATH/src/azul3d.org/somepkg.v1
-```
+Note that the application at `azul3d.org` is truly just a special proxy application -- all of the code is still hosted [on GitHub](https://github.com/azul3d).
 
-And since we claimed in the meta tag that `azul3d.org/somepkg.v1/repo` was our git repository, git clone issues a few HTTP requests to clone the repository hosted there. We intercept those requests and forward them over to GitHub, while also pointing them towards the correct version tag specified in the URL.
+If you want to see how all of this happens you can [view the source](http://github.com/azul3d/appengine).
 
