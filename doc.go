@@ -20,7 +20,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/google/go-github/github"
+	"azul3d.org/semver.v1"
 )
 
 var sectionRe = regexp.MustCompile("[^A-Za-z0-9 -]+")
@@ -108,25 +108,11 @@ func openPkgDoc(path, importPath string) (*doc.Package, *token.FileSet, error) {
 	return pkg, fset, nil
 }
 
-func genPkgIndex(importables sortedImportables) (error, string) {
+func genPkgIndex(importables sortedImportables) error {
 	// Make copy of slice before deleting elements below.
 	cpy := make(sortedImportables, len(importables))
 	copy(cpy, importables)
 	importables = cpy
-
-	searching := true
-search:
-	for searching {
-		for i, imp := range importables {
-			if len(imp.VersionTags) == 1 && imp.VersionTags[0] == "dev" {
-				// Only has dev version tag (i.e. package not released yet).
-				// Do not index it on the packages page.
-				importables = append(importables[:i], importables[i+1:]...)
-				continue search
-			}
-		}
-		searching = false
-	}
 
 	// Map used to serve templates with data.
 	tmplData := make(map[string]interface{}, 32)
@@ -134,7 +120,7 @@ search:
 	// Create map of synopses to importables' indices.
 	synopses := make([]string, len(importables))
 	for i, imp := range importables {
-		mostRecentVersion := imp.VersionTags[0]
+		mostRecentVersion := imp.Versions[0]
 		path := filepath.Join(baseImport, imp.RelPkgPath+"."+mostRecentVersion)
 
 		// Source directory is not relative, but is under $GOPATH/src.
@@ -144,10 +130,13 @@ search:
 		pkg, _, err := openPkgDoc(absPath, path)
 		if err != nil {
 			log.Println("            -> ERROR", err)
-			synopses[i] = "Synopsis is unavailable."
+			synopses[i] = "Package synopsis is unavailable."
 			continue
 		}
 		synopses[i] = doc.Synopsis(pkg.Doc)
+		if len(synopses[i]) == 0 {
+			synopses[i] = "Package synopsis is unavailable."
+		}
 	}
 	tmplData["Synopses"] = synopses
 
@@ -161,20 +150,20 @@ search:
 	outPath := filepath.Join(*outDir, pkgIndexOut)
 	err := os.MkdirAll(filepath.Dir(outPath), os.ModeDir|os.ModePerm)
 	if err != nil {
-		return err, ""
+		return err
 	}
 	out, err := os.Create(outPath)
 	if err != nil {
-		return err, ""
+		return err
 	}
 
 	// Finally, execute the template with the data.
-	return tmplRoot.ExecuteTemplate(out, pkgIndexTemplate, tmplData), outPath
+	return tmplRoot.ExecuteTemplate(out, pkgIndexTemplate, tmplData)
 }
 
 type importable struct {
-	RelPkgPath  string
-	VersionTags []string
+	RelPkgPath string
+	Versions   []string
 }
 type sortedImportables []importable
 
@@ -198,6 +187,56 @@ func gogetu(path string) (err error, stdout, stderr *bytes.Buffer) {
 	return cmd.Run(), stdout, stderr
 }
 
+// impVersions returns all of the importable versions of the package living at
+// the given repo.
+func impVersions(repo repo) []string {
+	// A map of all versions, used to avoid duplicate e.g. branch/tag versions.
+	vmap := make(map[string]bool, len(repo.Tags)+len(repo.Branches))
+
+	// parseVersion attempts to parse the version string (git tag/branch name),
+	// if the given version string is a valid version it's major string is
+	// returned (dev versions are NOT accepted):
+	//
+	//  "v1.2" -> semver.Version{Major: 1}
+	//  "v2.4.3" -> semver.Version{Major: 2}
+	//  "trash string" -> semver.InvalidVersion
+	//  "v4-dev" -> semver.InvalidVersion
+	//  "v4.2.3-dev" -> semver.InvalidVersion
+	//
+	parseVersion := func(version string) semver.Version {
+		v := semver.ParseVersion(version)
+		if v == semver.InvalidVersion || v.Dev {
+			return semver.InvalidVersion
+		}
+		v.Minor = -1
+		v.Patch = -1
+		return v
+	}
+
+	// Load all valid versions from tag/branch names into the map.
+	for _, tag := range repo.Tags {
+		v := parseVersion(*tag.Name)
+		if v != semver.InvalidVersion {
+			vmap[v.String()] = true
+		}
+	}
+	for _, branch := range repo.Branches {
+		v := parseVersion(*branch.Name)
+		if v != semver.InvalidVersion {
+			vmap[v.String()] = true
+		}
+	}
+
+	// Build a sorted list of versions, since we only care about major versions
+	// here we can just use string sorting.
+	versions := make([]string, 0, len(vmap))
+	for v := range vmap {
+		versions = append(versions, v)
+	}
+	sort.Sort(sort.Reverse(sort.StringSlice(versions)))
+	return versions
+}
+
 func generateDocs() error {
 	if *docsFlag == false && *updateFlag == false {
 		log.Println("Skipping updates of local repositories (-update=false).")
@@ -212,29 +251,15 @@ func generateDocs() error {
 	}
 
 	// Remove ignored repos from the map.
-	for repoName, repo := range repos {
+	for repoName := range repos {
 		_, ignored := ignoredRepos[repoName]
 		if ignored {
-			log.Printf("    ignoring %q - %s\n", repoName, *repo.URL)
 			delete(repos, repoName)
 			continue
 		} else {
-			log.Printf("    found repo %q - %s\n", repoName, *repo.URL)
-		}
-
-		// Add implicit development version tag to the slice.
-		dev := "dev"
-		repo.Tags = append(repo.Tags, github.RepositoryTag{
-			Name: &dev,
-		})
-		repos[repoName] = repo
-
-		// List packages found in each repo.
-		for _, tag := range repo.Tags {
-			log.Println("        Package -", importURL(repoName, *tag.Name))
+			log.Printf(" - %s\n", repoName)
 		}
 	}
-	log.Println("    done.")
 
 	if *updateFlag == false {
 		log.Println("Skipping updates of local repositories (-update=false).")
@@ -251,7 +276,6 @@ func generateDocs() error {
 				}
 			}
 		}
-		log.Println("    done.")
 	}
 
 	if *docsFlag == false {
@@ -259,28 +283,25 @@ func generateDocs() error {
 	} else {
 		log.Println("Generating package documentation...")
 
-		// Create a list of base import paths and all versions of the package.
+		// Create a list of package paths and importable versions.
 		var importables sortedImportables
 		for repoName, repo := range repos {
-			versionTags := make([]string, 0, len(repo.Tags))
-			for _, tag := range repo.Tags {
-				versionTags = append(versionTags, *tag.Name)
+			versions := impVersions(repo)
+			if len(versions) == 0 {
+				continue
 			}
-			sort.Sort(sort.Reverse(sort.StringSlice(versionTags)))
 			importables = append(importables, importable{
-				RelPkgPath:  dashToSlash(repoName),
-				VersionTags: versionTags,
+				RelPkgPath: dashToSlash(repoName),
+				Versions:   impVersions(repo),
 			})
 		}
 		sort.Sort(importables)
 
 		// Package index.
 		log.Println("    genPkgIndex")
-		err, outPath := genPkgIndex(importables)
+		err := genPkgIndex(importables)
 		if err != nil {
 			log.Println("        -> ERROR", err)
-		} else {
-			log.Println("        ->", outPath)
 		}
 	}
 

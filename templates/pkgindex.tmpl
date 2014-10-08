@@ -14,16 +14,12 @@
 	{{template "perma-section" section $p.RelPkgPath (call $.ID $p.RelPkgPath) "pkg-index" "pkg-index"}}
 		<p>{{index $.Synopses $index}}</p>
 		{{template "list"}}
-			{{range $index, $v := $p.VersionTags}}
+			{{range $index, $v := $p.Versions}}
 				{{$url := printf "https://godoc.org/azul3d.org/%s.%s" $p.RelPkgPath $v}}
-				{{if eq $v "dev"}}
-					{{template "li"}}<a href="{{$url}}">{{$v}}</a> (in development){{template "li-end"}}
+				{{if eq $index 0}}
+					{{template "li"}}<a href="{{$url}}">{{$v}}</a> (latest version){{template "li-end"}}
 				{{else}}
-					{{if eq $v (index $p.VersionTags 0)}}
-						{{template "li"}}<a href="{{$url}}">{{$v}}</a> (latest version){{template "li-end"}}
-					{{else}}
-						{{template "li"}}<a href="{{$url}}">{{$v}}</a>{{template "li-end"}}
-					{{end}}
+					{{template "li"}}<a href="{{$url}}">{{$v}}</a>{{template "li-end"}}
 				{{end}}
 			{{end}}
 		{{template "list-end"}}
