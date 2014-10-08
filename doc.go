@@ -14,6 +14,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"path"
 	"path/filepath"
 	"regexp"
 	"sort"
@@ -261,14 +262,28 @@ func generateDocs() error {
 		}
 	}
 
+	// Create a list of package paths and importable versions.
+	var importables sortedImportables
+	for repoName, repo := range repos {
+		versions := impVersions(repo)
+		if len(versions) == 0 {
+			continue
+		}
+		importables = append(importables, importable{
+			RelPkgPath: dashToSlash(repoName),
+			Versions:   impVersions(repo),
+		})
+	}
+	sort.Sort(importables)
+
 	if *updateFlag == false {
 		log.Println("Skipping updates of local repositories (-update=false).")
 	} else {
 		log.Println("Updating local repositories...")
-		for repoName, repo := range repos {
-			for _, tag := range repo.Tags {
-				path := importURL(repoName, *tag.Name)
-				err, stdout, stderr := gogetu(path)
+		for _, imp := range importables {
+			for _, ver := range imp.Versions {
+				pkgPath := path.Join(baseImport, imp.RelPkgPath) + "." + ver
+				err, stdout, stderr := gogetu(pkgPath)
 				stdout.WriteTo(os.Stdout)
 				stderr.WriteTo(os.Stderr)
 				if err != nil {
@@ -282,20 +297,6 @@ func generateDocs() error {
 		log.Println("Skipping generation of package documentation (-docs=false).")
 	} else {
 		log.Println("Generating package documentation...")
-
-		// Create a list of package paths and importable versions.
-		var importables sortedImportables
-		for repoName, repo := range repos {
-			versions := impVersions(repo)
-			if len(versions) == 0 {
-				continue
-			}
-			importables = append(importables, importable{
-				RelPkgPath: dashToSlash(repoName),
-				Versions:   impVersions(repo),
-			})
-		}
-		sort.Sort(importables)
 
 		// Package index.
 		log.Println("    genPkgIndex")
