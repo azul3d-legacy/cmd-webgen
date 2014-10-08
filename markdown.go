@@ -24,7 +24,7 @@ func mdRender(input []byte, sanitized bool) []byte {
 	htmlFlags |= bf.HTML_SMARTYPANTS_FRACTIONS
 	htmlFlags |= bf.HTML_SMARTYPANTS_LATEX_DASHES
 	if sanitized {
-		htmlFlags |= bf.HTML_SANITIZE_OUTPUT
+		panic("sanitization not implemented")
 	}
 	renderer := bf.HtmlRenderer(htmlFlags, "", "")
 
