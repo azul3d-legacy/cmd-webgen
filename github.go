@@ -100,9 +100,27 @@ func fetchTags(ghClient *github.Client, repo string) ([]github.RepositoryTag, er
 	return allTags, nil
 }
 
+func fetchBranches(ghClient *github.Client, repo string) ([]github.Branch, error) {
+	opt := &github.ListOptions{PerPage: 100}
+	var allBranches []github.Branch
+	for {
+		branches, resp, err := ghClient.Repositories.ListBranches(ghOrganization, repo, opt)
+		if err != nil {
+			return nil, err
+		}
+		allBranches = append(allBranches, branches...)
+		if resp.NextPage == 0 {
+			break
+		}
+		opt.Page = resp.NextPage
+	}
+	return allBranches, nil
+}
+
 type repo struct {
 	github.Repository
-	Tags []github.RepositoryTag
+	Tags     []github.RepositoryTag
+	Branches []github.Branch
 }
 
 func fetchRepos() (map[string]repo, error) {
@@ -113,7 +131,7 @@ func fetchRepos() (map[string]repo, error) {
 		return nil, err
 	}
 
-	// Fetch tags using multiple goroutines.
+	// Fetch tags and branches using multiple goroutines.
 	var (
 		errors    = make(chan error, 16)
 		reposChan = make(chan repo, 16)
@@ -123,15 +141,21 @@ func fetchRepos() (map[string]repo, error) {
 		r := toCpy
 		go func() {
 			client := <-ghClients
-			tags, err := fetchTags(client, *r.Name)
+			tags, tagsErr := fetchTags(client, *r.Name)
+			branches, branchesErr := fetchBranches(client, *r.Name)
 			ghClients <- client
-			if err != nil {
-				errors <- err
+			if tagsErr != nil {
+				errors <- tagsErr
+				return
+			}
+			if branchesErr != nil {
+				errors <- branchesErr
 				return
 			}
 			reposChan <- repo{
 				Repository: r,
 				Tags:       tags,
+				Branches:   branches,
 			}
 		}()
 	}
