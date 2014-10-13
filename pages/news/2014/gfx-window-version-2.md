@@ -1,4 +1,5 @@
 # gfx/window: version 2
+<p class="date">September 10, 2014</p>
 
 Azul3D has for a very long time had a [gfx/window](packages.html#gfx-window) package.
 
