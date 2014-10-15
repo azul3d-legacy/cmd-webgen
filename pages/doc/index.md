@@ -1,15 +1,20 @@
 # Documentation
 
-* [Installation](/doc/install)
-* [Frequently Asked Questions](/doc/faq.html)
-* [Supported Platforms](/doc/platform-support.html)
-* [More Packages](/more-packages.html)
-* [The Roadmap](/doc/roadmap.html)
-* [Updating Packages](/doc/updating.html)
-* [How Versioning Works](/doc/versioning.html)
-* [Authors](/doc/authors.html)
-* [License](/doc/license.html)
+ * General
+  * [FAQ](/doc/faq.html)
+  * [Installation](/doc/install)
+  * [Platform Support](/doc/platform-support.html)
+  * [Roadmap](/doc/roadmap.html)
+  * [Authors](/doc/authors.html)
+  * [License](/doc/license.html)
+ * Packages
+  * [Official Packages](/packages.html)
+  * [More Packages](/more-packages.html)
+  * [Updating](/doc/updating.html)
+  * [Versioning](/doc/versioning.html)
+ * Graphics
+  * [Draw Calls](/doc/gfx/draw-calls.html)
 
-# Packages
+# API Reference
 
-A packages API documentation can be found through the [packages page](/packages.html).
+Each package's API documentation can be found through the [packages page](/packages.html).
