@@ -13,6 +13,6 @@
 
 # News
 
-* [Better Package Docs, Versioning](/news/2014/better-package-docs-versioning.html)
-* [Improving The Site And Licensing](/news/2014/improving-the-site-and-licensing.html)
+* [audio/wav: version 1.1](/news/2014/audio-wav-version-1-1.html)
+* [gfx, gfx/gl2: minor update](/news/2014/gfx-gfx-gl2-minor-update.html)
 * [>>> more news](/news/)
