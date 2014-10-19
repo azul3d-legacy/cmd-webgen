@@ -15,7 +15,7 @@ Version 1.1 of the [audio/wav](/audio/wav.v1) package is now available!
 # Overview
 
  * Encoding support (was issue [#1](https://github.com/azul3d/audio-wav/issues/1)).
-  * *You can decode and encode WAV audio in Go (thanks goes out to [Robin Eklind](https://github.com/mewmew) and [Henry Eklind](https://github.com/mewkiz84)!).*
+  * *You can decode and encode WAV audio in Go (thanks goes out to [Robin Eklind](https://github.com/mewmew) and [Henry Eklind](https://github.com/karlek)!).*
  * Massive (~100%) performance improvements (was issue [#8](https://github.com/azul3d/audio-wav/issues/8)).
   * *The decoder is much faster averaging around 5.5ms to decode 1s of 44100hz/2ch WAV audio (On a Pentium(R) Dual-Core CPU - T4500 @ 2.30GHz), which is on-par with the WAV encoder.*
  * Removed the unsafe dependency (was issue [#4](https://github.com/azul3d/audio-wav/issues/4)).
