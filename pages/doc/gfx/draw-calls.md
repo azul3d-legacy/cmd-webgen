@@ -14,7 +14,7 @@ Using the gfx package a draw call is done through the `gfx.Canvas` interface, li
 
 `canvas.Draw(image.Rect(0,0,0,0), obj, cam)`
 
-Where `obj` is a `gfx.Object`, and `cam` is a `gfx.Camera`.
+Where `obj` is a `gfx.Object` and `cam` is a `gfx.Camera`.
 
 In literal OpenGL code the above draw operation would equate to either `glDrawArrays` or `glDrawElements` (depending on whether or not the mesh is indexed). Technically each `canvas.Draw` operations makes `N` draw calls, where `N` is the number of `gfx.Mesh` that the `gfx.Object` being drawn contains.
 
